@@ -1,9 +1,6 @@
-const { ObjectId, ObjectID } = require("bson")
 const mongoose = require("mongoose")
-// const jwt = require("jsonwebtoken")
-const authorModel = require("../models/authorModel")
-const blogModel = require("../models/blogModel")
-
+const authorModel = require("../model/authorModel")
+const blogModel = require("../model/blogModel")
 
 const createAuthor = async function (req, res) {
   let data = req.body
