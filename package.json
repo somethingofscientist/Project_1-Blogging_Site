@@ -1,0 +1,22 @@
+{
+  "name": "project_1-blog_web-",
+  "version": "1.0.0",
+  "description": "Radon\r Repository for backend cohort - Radon",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sahilpayla/Project_1-Blog_Web-.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sahilpayla/Project_1-Blog_Web-/issues"
+  },
+  "homepage": "https://github.com/sahilpayla/Project_1-Blog_Web-#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
