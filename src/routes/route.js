@@ -10,6 +10,7 @@ router.post("/createAuthor", authors.createAuthor)
 router.post("/createBlog", authors.createBlog)
 router.get("/getBlog", authors.getBlog)
 router.put("/blogs/:blogId", authors.Updateblog)
+router.delete("/blogs/:blogId", authors.deleteBlog)
 
 
 module.exports = router;
