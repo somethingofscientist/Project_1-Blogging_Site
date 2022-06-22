@@ -17,11 +17,25 @@ const createBlog = async function (req, res) {
 
 
 const getBlog = async function (req, res) {
+  try
+      {
+        let data = req.query.authorId
+        let mainData = []
+        if(!data) {return res.send("author Id Is Not Valid")}
+        let blogsData = await blogModel.find({ authorId: data})
+        
+        blogsData.filter( afterFilter =>{
 
-  let list = await bookModel.find({author_id:1})
-  if(!data.isdeleted==false && data.isPublished ==true) {return res.send("No Documents Are Found")}
-  
-  res.status(201).send({ data: list }) //ALL GOOD... //status(201)- OK
+          if( afterFilter.isDeleted == false ) 
+              mainData.push(afterFilter)
+        })
+        res.status(200).send({ status: true , data: mainData }) 
+
+      }
+
+  catch(error){
+        res.status(404).send({ status: false , msg: "No Document Is Found"})
+      }
 }
 
 
