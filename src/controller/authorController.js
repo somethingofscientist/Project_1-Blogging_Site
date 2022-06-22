@@ -15,5 +15,16 @@ const createBlog = async function (req, res) {
     res.status(201).send({ data: savedData }) //ALL GOOD... //status(201)- OK
 }
 
+
+const getBlog = async function (req, res) {
+
+  let list = await bookModel.find({author_id:1})
+  if(!data.isdeleted==false && data.isPublished ==true) {return res.send("No Documents Are Found")}
+  
+  res.status(201).send({ data: list }) //ALL GOOD... //status(201)- OK
+}
+
+
 module.exports.createAuthor = createAuthor
 module.exports.createBlog = createBlog
+module.exports.getBlog = getBlog
