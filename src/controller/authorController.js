@@ -21,7 +21,7 @@ const getBlog = async function (req, res) {
       {
         let data = req.query.authorId
         let mainData = []
-        if(!data) {return res.send("author Id Is Not Valid")}
+        // if(!data) {return res.send("author Id Is Not Valid")}
         let blogsData = await blogModel.find({ authorId: data})
         
         blogsData.filter( afterFilter =>{
