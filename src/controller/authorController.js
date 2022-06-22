@@ -57,7 +57,7 @@ const createBlog = async function (req, res) {
         let date = new Date().toLocaleString();
         let Id = req.params.blogId
 
-        const blogs = await blogModel.findOneAndUpdate({_id:Id},{$set:{title:title ,body:body ,category:category ,tag:tag ,isPublished:true ,publishedAt:date }},{new:true})
+        const blogs = await blogModel.findOneAndUpdate({_id:Id},{$set:{title:title ,body:body ,category:category ,tag:tag ,isPublished:true ,publishedAt:date }},{new:true, upsert:true})
         res.status(200).send({msg:blogs})
 
       } 
@@ -67,7 +67,34 @@ const createBlog = async function (req, res) {
     }
 
 
+    const deleteBlogByParams = async function (req, res ){
+      try
+      {
+        let category = req.params.category
+        let authorId = req.params.authorId
+        let tag = req.params.tag
+        let subcategory = req.params.subcategory
+        let unpublished = req.params.unpublished
+
+        const blogs = await blogModel.findOneAndUpdate({_id:Id},{$set:
+          {
+            category:category ,
+            authorId:authorId ,
+            tag:tag ,
+            subcategory:subcategory ,
+            unpublished:unpublished
+          }},{new:true, upsert:true})
+        res.status(200).send({msg:blogs})
+
+      }
+      catch(error){
+        res.status(404).send({ msg: "Blog Document Is Not Exist" })
+      }
+    }
+
+
 module.exports.createAuthor = createAuthor
 module.exports.createBlog = createBlog
 module.exports.getBlog = getBlog
 module.exports.Updateblog = Updateblog
+module.exports.deleteBlogByParams = deleteBlogByParams
