@@ -1,6 +1,3 @@
-
-
-const { truncate } = require("fs")
 const mongoose = require("mongoose")
 const authorModel = require("../model/authorModel")
 const blogModel = require("../model/blogModel")
@@ -17,8 +14,7 @@ const createBlog = async function (req, res) {
     let data = req.body
     if(!data.authorId) {return res.status(400).send("author Id Is Not Valid")}
     const savedData = await blogModel.create(data)
-    res.status(201).send({ data: savedData }) //ALL GOOD... //status(201)- OK
-
+    res.status(201).send({ data: savedData }) 
   }
 
   // GET BLOG 
@@ -75,14 +71,14 @@ const createBlog = async function (req, res) {
         let tag = req.params.tag
         let subcategory = req.params.subcategory
         let unpublished = req.params.unpublished
-
-        const blogs = await blogModel.findOneAndUpdate({_id:Id},{$set:
+        
+        const blogs = await blogModel.findOneAndDelete({_id:authorId},{$set:
           {
             category:category ,
             authorId:authorId ,
             tag:tag ,
             subcategory:subcategory ,
-            unpublished:unpublished
+            unpublished:  unpublished
           }},{new:true, upsert:true})
         res.status(200).send({msg:blogs})
 
