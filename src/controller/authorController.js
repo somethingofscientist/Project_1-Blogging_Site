@@ -33,24 +33,24 @@ const createBlog = async function (req, res) {
   }
 
 
-
   // GET BLOG 
   const getBlog = async function (req, res) {
     try
     {
       let data = req.query.authorId
       let mainData = []
-      let blogData = await blogModel.find({  authorId: data  })
+      let blogsData = await blogModel.find({ authorId: data })
 
-      blogData.filter( afterFilter => {
+      blogsData.filter( afterFilter =>{
+
            if( afterFilter.isDeleted == false ) 
                 mainData.push(afterFilter)
       })
-      res.status(200).send({ status: true , data: mainData }) 
+      res.status(200).send({ data: mainData }) 
+
     }
-  
     catch(error){
-          res.status(500).send({ status: false , msg: "No Document Is Found"})
+          res.status(500).send({ status: false , msg: "No File Found"})
         }
   }
 
