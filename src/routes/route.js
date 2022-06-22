@@ -8,9 +8,10 @@ router.get("/me", function (req, res) {
 
 router.post("/createAuthor", authors.createAuthor)
 router.post("/createBlog", authors.createBlog)
-router.get("/getBlog/:authorId", authors.getBlog)
+router.get("/getBlog/:authorId", authors.getBlogs)
 router.put("/blogs/:blogId", authors.Updateblog)
 router.delete("/blogs/:blogId", authors.deleteBlog)
+router.delete("/blogs/:blogId", authors.deleteBlogs)
 
 
 module.exports = router;
