@@ -18,21 +18,9 @@ const createBlog = async function (req, res) {
     if(!data.authorId) {return res.status(400).send("author Id Is Not Valid")}
     const savedData = await blogModel.create(data)
     res.status(201).send({ data: savedData }) //ALL GOOD... //status(201)- OK
-  }
-  
-  
-  
-//   const getBlog = async function (req, res) {
-    
-//     let field = req.body.Id
-//     const Allblog = await blogModel.find({authorId:Id})
-//     Allblog.filter(a=>{
-//       if(a.isDeleted==false)
-//     })
 
-  
-//   res.status(201).send({ data: list }) //ALL GOOD... //status(201)- OK
-// }
+  }
+
   const Updateblog = async function (req, res) {
     
     try {
@@ -55,6 +43,31 @@ const createBlog = async function (req, res) {
     }
 
 
+const getBlog = async function (req, res) {
+  try
+      {
+        let data = req.query.authorId
+        let mainData = []
+        // if(!data) {return res.send("author Id Is Not Valid")}
+        let blogsData = await blogModel.find({ authorId: data})
+        
+        blogsData.filter( afterFilter =>{
+
+          if( afterFilter.isDeleted == false ) 
+              mainData.push(afterFilter)
+        })
+        res.status(200).send({ status: true , data: mainData }) 
+
+      }
+
+  catch(error){
+        res.status(404).send({ status: false , msg: "No Document Is Found"})
+      }
+}
+
+
+
 module.exports.createAuthor = createAuthor
 module.exports.createBlog = createBlog
 module.exports.Updateblog = Updateblog
+module.exports.getBlog = getBlog
