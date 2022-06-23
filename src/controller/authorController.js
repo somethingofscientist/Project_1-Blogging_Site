@@ -118,6 +118,12 @@ const createBlog = async function (req, res) {
       }
     }
 
+    const loginAuthor = async function(req, res){
+      let username = req.body.emailId;
+      let password = req.body.password;
+
+      let user = await authorModel.findOne({ emailId: username , password:password});
+    }
 
 module.exports.createAuthor = createAuthor
 module.exports.createBlog = createBlog
@@ -125,3 +131,7 @@ module.exports.getBlog = getBlog
 module.exports.updateBlog = updateBlog
 module.exports.deleteBlog = deleteBlog
 module.exports.deleteBlogByParams = deleteBlogByParams
+
+// new 
+// authentication and authorisation
+module.exports.loginAuthor = loginAuthor
