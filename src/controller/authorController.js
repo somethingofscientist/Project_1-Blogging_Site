@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 const authorModel = require("../model/authorModel")
 const jwt = require("jsonwebtoken");
 const blogModel = require("../model/blogModel")
-
+// aprit
 // CREATE AUTHOR
 const createAuthor = async function (req, res) {
   try {
@@ -23,34 +23,12 @@ const createBlog = async function (req, res) {
     if (!data.authorId) { return res.status(400).send("author Id Is Not Valid") }
     const savedData = await blogModel.create(data)
     res.status(201).send({ data: savedData })
-  } catch (error) {
+  }
+  catch (error) {
     res.status(500).send({ msg: error.message })
   }
 }
 
-
-// AUTHENTICATION PART============================  
-const loginAuthor = async function (req, res) {
-  let username = req.body.emailId;
-  let password = req.body.password;
-
-  let user = await authorModel.findOne({ emailId: username, password: password });
-  if (!user)
-    return res.send({
-      status: false,
-      msg: " username or password is incorrect "
-    });
-
-  // AUTHENTICATION BEGINS HERE===================
-  let token = jwt.sign(
-    {
-      authorId: user._id.toString()
-    },
-    "project_1" //==========> secret key
-  );
-  res.setHeaders("x-auth-token", token);
-  res.send({ status: true, token: token });
-};
 
 
 // GET BLOG
@@ -58,7 +36,9 @@ const getBlog = async function (req, res) {
   try {
     let data = req.query.authorId
     let mainData = []
-    let blogData = await blogModel.find({ authorId: data })
+    let blogData = await blogModel.find({ authorId: data }).populate("authorId")
+
+    if (!blogData) return res.status(404).send({ status: false, msg: "No Such User Found" })
 
     blogData.filter(afterFilter => {
       if (afterFilter.isDeleted == false)
@@ -139,7 +119,40 @@ const deleteBlogByParams = async function (req, res) {
     res.status(500).send({ msg: "Blog Document Is Not Exist" })
   }
 }
+// AUTHENTICATION PART============================  
+const loginAuthor = async function (req, res) {
+  try {
+    let username = req.body.emailId;
+    let password = req.body.password;
 
+    let user = await authorModel.findOne({ emailId: username, password: password });
+    if (!user) return res.send({ status: false, msg: " username or password is incorrect " });
+
+    // AUTHENTICATION BEGINS HERE===================
+
+    let token = jwt.sign(
+      {
+        authorId: user._id.toString(),
+        // take GIT
+        email: user.email.toString()
+      },
+      "project_1");
+
+    res.setHeaders("x-api-key", token);
+    res.send({
+      status: true,
+      token: "Login SuccessFully, Token sent in header 'x-api-key'"
+    });
+  }
+
+  catch (err) {
+    res.status(500).send({
+      status: false,
+      msg: "Internal Server Error",
+      error: err.message,
+    });
+  }
+};
 
 
 module.exports.createAuthor = createAuthor
