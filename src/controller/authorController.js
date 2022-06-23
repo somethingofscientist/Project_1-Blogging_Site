@@ -4,16 +4,16 @@ const blogModel = require("../model/blogModel")
 
 // CREATE AUTHOR
 const createAuthor = async function (req, res) {
-  try
-  {
-    let data = req.body
-    const savedData = await authorModel.create(data)
-    res.status(200).send({ data: savedData }) 
-  }
-  catch(error)
-  {
-    res.status(500).send({msg: "Server Error"})
-  }
+      try
+      {
+        let data = req.body
+        const savedData = await authorModel.create(data)
+        res.status(200).send({ data: savedData }) 
+      }
+      catch(error)
+      {
+        res.status(500).send({msg: "Server Error"})
+      }
 }
 
 // CREATE BLOG
@@ -43,10 +43,10 @@ const createBlog = async function (req, res) {
 
       blogsData.filter( afterFilter =>{
 
-           if( afterFilter.isDeleted == false ) 
+           if( afterFilter.isDeleted == false)  
                 mainData.push(afterFilter)
       })
-      res.status(200).send({ data: mainData }) 
+      res.status(200).send({ status:true, data: mainData }) 
 
     }
     catch(error){
@@ -55,7 +55,7 @@ const createBlog = async function (req, res) {
   }
 
   // UPDATE BLOG
-  const Updateblog = async function (req, res) {
+  const updateBlog = async function (req, res) {
     
     try 
     {
@@ -122,6 +122,6 @@ const createBlog = async function (req, res) {
 module.exports.createAuthor = createAuthor
 module.exports.createBlog = createBlog
 module.exports.getBlog = getBlog
-module.exports.Updateblog = Updateblog
+module.exports.updateBlog = updateBlog
 module.exports.deleteBlog = deleteBlog
 module.exports.deleteBlogByParams = deleteBlogByParams
