@@ -1,5 +1,4 @@
 const mongoose = require("mongoose")
-const blogModel = require("../model/blogModel")
 const authorModel = require("../model/authorModel")
 const jwt = require("jsonwebtoken");
 
@@ -12,14 +11,15 @@ const isValid = function (value) {
   return true
 }
 
-
-// Sahil
 // CREATE AUTHOR
 const createAuthor = async function (req, res) {
   try {
     let data = req.body
 
+    // ALL THE EDGE CASES ARE HERE FOR THE CREATE AUTHOR
+
     // function to validate empty spaces
+    // not able to understand but it is REGEX
     function onlySpaces(str) {
       return /^\s*$/.test(str);
     }
@@ -54,9 +54,12 @@ const createAuthor = async function (req, res) {
     }
 
     const isEmailPresent = await authorModel.findOne({ email: data.email })
+
     if (isEmailPresent) {
-      return res.status(400).send({ status: false, msg: "Email already exist" })
+      return res.status(400).send({ status: false, msg: "EmailId Is Already Exist In DB" })
     }
+
+    // AUTHOR CREATED HERE
 
     const savedData = await authorModel.create(data)
     return res.status(200).send({ data: savedData })
@@ -68,13 +71,14 @@ const createAuthor = async function (req, res) {
 
 }
 
-
-// AUTHENTICATION PART============================  
+// LOGIN USER OR AUTHOR ==========================
+// AUTHENTICATION PART ===========================  
 const loginAuthor = async function (req, res) {
   try {
     let username = req.body.emailId;
     let password = req.body.password;
 
+    // edges cases
     if (!username) {
       return res.status(400).send({ status: false, msg: " please Enter Username" })
     }
@@ -83,20 +87,28 @@ const loginAuthor = async function (req, res) {
       return res.status(400).send({ status: false, msg: " please Enter password" })
     }
 
-    let user = await authorModel.findOne({ emailId: username, password: password });
-    if (!user) return res.send({ status: false, msg: " username or password is incorrect " });
+    let user = await authorModel.findOne({ 
+      emailId: username, 
+      password: password 
+    });
+    
+    if (!user) return res.status(400).send({ 
+      status: false, 
+      msg: " username or password is incorrect " 
+    });
 
     // AUTHENTICATION BEGINS HERE===================
 
-    let token = jwt.sign(
-      {
+    let token = jwt.sign({
+      // provide the things which are unique like object id
         authorId: user._id.toString(),
       },
-      "project_1");
+      "project_1"
+      );
 
-    res.send({
+    res.status(200).send({
       status: true,
-      token: "Login SuccessFully, Token sent in header 'x-api-key'",
+      token: "You Are Now Login In The App",
       data: { token: token }
     });
   }
