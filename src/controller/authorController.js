@@ -5,25 +5,30 @@ const blogModel = require("../model/blogModel")
 
 // CREATE AUTHOR
 const createAuthor = async function (req, res) {
-  try {
+  try 
+  {
     let data = req.body
     const savedData = await authorModel.create(data)
     res.status(200).send({ data: savedData })
   }
-  catch (error) {
+  catch (error)
+   {
     res.status(500).send({ msg: "Server Error" })
-  }
+   }
 
 }
 
 // CREATE BLOG
 const createBlog = async function (req, res) {
-  try{
+  try
+  {
   let data = req.body
   if (!data.authorId) { return res.status(400).send("author Id Is Not Valid") }
   const savedData = await blogModel.create(data)
   res.status(201).send({ data: savedData })
-  }catch(error){
+  }
+  catch(error)
+  {
     res.status(500).send({msg:error.message})
   }
 }
@@ -34,7 +39,9 @@ const getBlog = async function (req, res) {
   try {
     let data = req.query.authorId
     let mainData = []
-    let blogData = await blogModel.find({ authorId: data })
+    let blogData = await blogModel.find({ authorId: data }).populate("authorId")
+
+    if(!blogData) return res.status(404).send({status:false, msg: "No Such User Found"})
 
     blogData.filter(afterFilter => {
       if (afterFilter.isDeleted == false)
@@ -118,25 +125,39 @@ const deleteBlogByParams = async function (req, res) {
 
     // AUTHENTICATION PART============================  
     const loginAuthor = async function(req, res){
-      let username = req.body.emailId;
+      try
+      {
+        let username = req.body.emailId;
       let password = req.body.password;
 
       let user = await authorModel.findOne({ emailId: username , password: password});
-      if( !user )
-        return res.send({
-          status: false,
-          msg: " username or password is incorrect " 
-        });
-
+      if( !user )  return res.send ({ status: false, msg: " username or password is incorrect " });
+      
       // AUTHENTICATION BEGINS HERE===================
+
       let token = jwt.sign(
-        {
-          authorId: user._id.toString()
+        { 
+          authorId: user._id.toString(),
+          // take GIT
+          email: user.email.toString()
         },
-        "project_1" //==========> secret key
-      );
-      res.setHeaders("x-auth-token", token);
-      res.send({ status:true, token: token });
+        "project_1");
+
+      res.setHeaders("x-api-key", token);
+      res.send({ 
+                status:true, 
+                token: "Login SuccessFully, Token sent in header 'x-api-key'" 
+      });
+      }
+
+      catch (err) 
+      {
+        res.status(500).send({
+                              status: false,
+                              msg: "Internal Server Error",
+                              error: err.message,
+        });
+      }
     };
 
 module.exports.createAuthor = createAuthor
