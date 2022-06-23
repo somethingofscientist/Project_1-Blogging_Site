@@ -28,23 +28,24 @@ const createBlog = async function (req, res) {
 
 
 // GET BLOG
-const getBlog = async function (req, res) {
-  try {
-    let data = req.query.authorId
-    let mainData = []
-    let blogData = await blogModel.find({ authorId: data })
+// const getBlog = async function (req, res) {
+//   try {
+//     let data = req.query.authorId
+//     let mainData = []
+//     let blogData = await blogModel.find({ authorId: data })
 
-    blogData.filter(afterFilter => {
-      if (afterFilter.isDeleted == false)
-        mainData.push(afterFilter)
-    })
-    res.status(200).send({ status: true, data: mainData })
-  }
+//     blogData.filter(afterFilter => {
+//       if (afterFilter.isDeleted == false)
+//         mainData.push(afterFilter)
+//     })
+//     res.status(200).send({ status: true, data: mainData })
+//   }
 
-  catch (error) {
-    res.status(500).send({ status: false, msg: "No Document Is Found" })
-  }
-}
+//   catch (error) {
+//     res.status(500).send({ status: false, msg: "No Document Is Found" })
+//   }
+// }
+
 
 // UPDATE BLOG
 const Updateblog = async function (req, res) {
@@ -82,12 +83,33 @@ const deleteBlog = async function (req, res) {
     if (!blogsDelete) return res.status(404).send({ msg: "Data Not Found" })
 
     res.status(200).send({ status: true, msg: blogsDelete })
+    }catch{
+      res.status(500).send({msg:"server error"})
+    }
+}
+
+  // GET BLOG 
+  const getBlog = async function (req, res) {
+    try
+    {
+      let data = req.query.authorId
+      let mainData = []
+      let blogsData = await blogModel.find({ authorId: data })
+
+      blogsData.filter( afterFilter =>{
+
+           if( afterFilter.isDeleted == false ) 
+                mainData.push(afterFilter)
+      })
+      res.status(200).send({ data: mainData }) 
+
+    }
+    catch(error){
+          res.status(500).send({ status: false , msg: "No File Found"})
+        }
+
   }
 
-  catch (error) {
-    res.status(500).send({ status: false, msg: "Data Is Not Found" })
-  }
-}
 
 //DELETE BLOG BY PARAMS
 const deleteBlogByParams = async function (req, res) {
