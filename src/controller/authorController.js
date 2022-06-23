@@ -12,6 +12,7 @@ const createAuthor = async function (req, res) {
   catch (error) {
     res.status(500).send({ msg: "Server Error" })
   }
+
 }
 
 // CREATE BLOG
@@ -28,23 +29,23 @@ const createBlog = async function (req, res) {
 
 
 // GET BLOG
-// const getBlog = async function (req, res) {
-//   try {
-//     let data = req.query.authorId
-//     let mainData = []
-//     let blogData = await blogModel.find({ authorId: data })
+const getBlog = async function (req, res) {
+  try {
+    let data = req.query.authorId
+    let mainData = []
+    let blogData = await blogModel.find({ authorId: data })
 
-//     blogData.filter(afterFilter => {
-//       if (afterFilter.isDeleted == false)
-//         mainData.push(afterFilter)
-//     })
-//     res.status(200).send({ status: true, data: mainData })
-//   }
+    blogData.filter(afterFilter => {
+      if (afterFilter.isDeleted == false)
+        mainData.push(afterFilter)
+    })
+    res.status(200).send({ status: true, data: mainData })
+  }
 
-//   catch (error) {
-//     res.status(500).send({ status: false, msg: "No Document Is Found" })
-//   }
-// }
+  catch (error) {
+    res.status(500).send({ status: false, msg: "No Document Is Found" })
+  }
+}
 
 
 // UPDATE BLOG
@@ -88,30 +89,9 @@ const deleteBlog = async function (req, res) {
     }
 }
 
-  // GET BLOG 
-  const getBlog = async function (req, res) {
-    try
-    {
-      let data = req.query.authorId
-      let mainData = []
-      let blogsData = await blogModel.find({ authorId: data })
+  
 
-      blogsData.filter( afterFilter =>{
-
-           if( afterFilter.isDeleted == false ) 
-                mainData.push(afterFilter)
-      })
-      res.status(200).send({ data: mainData }) 
-
-    }
-    catch(error){
-          res.status(500).send({ status: false , msg: "No File Found"})
-        }
-
-  }
-
-
-//DELETE BLOG BY PARAMS
+// /DELETE BLOG BY PARAMS
 const deleteBlogByParams = async function (req, res) {
   try {
     let category = req.query.category
@@ -135,6 +115,12 @@ const deleteBlogByParams = async function (req, res) {
   }
 }
 
+    const loginAuthor = async function(req, res){
+      let username = req.body.emailId;
+      let password = req.body.password;
+
+      let user = await authorModel.findOne({ emailId: username , password:password});
+    }
 
 module.exports.createAuthor = createAuthor
 module.exports.createBlog = createBlog
@@ -142,6 +128,10 @@ module.exports.Updateblog = Updateblog
 module.exports.getBlog = getBlog
 module.exports.deleteBlog = deleteBlog
 module.exports.deleteBlogByParams = deleteBlogByParams
+// new 
+// authentication and authorisation
+module.exports.loginAuthor = loginAuthor
+
 
 
 
