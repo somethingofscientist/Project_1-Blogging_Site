@@ -3,12 +3,18 @@ const authorModel = require("../model/authorModel")
 const jwt = require("jsonwebtoken");
 
 
-// make a function for validation for the fname in the author
-
+// make a function for validation for the fname,lname,title in the author
+// By TA
 const isValid = function (value) {
   if (typeof value === "undefined" || value === Number || value === null) return false
   if (typeof value === "string" && value.trim().length === 0) return false
   return true
+}
+
+// function to validate empty spaces
+// By TA
+const space = function (str) {
+  return /^\s*$/.test(str);
 }
 
 // CREATE AUTHOR
@@ -18,36 +24,35 @@ const createAuthor = async function (req, res) {
 
     // ALL THE EDGE CASES ARE HERE FOR THE CREATE AUTHOR
 
-    // function to validate empty spaces
-    // not able to understand but it is REGEX
-    function onlySpaces(str) {
-      return /^\s*$/.test(str);
-    }
-
-    // VALIDATION:
-    // fname validation
-    // if (!data.fname) {
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, msg: "Please Enter fname(required field) " });
-    // } 
-
-    // else if (onlySpaces(data.fname) == true) {
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, msg: "fname cannot be a empty" });
-    // } 
-
-    // else if (!isNaN(data.fname)) {
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, msg: "fname cannot be a number" });
-    // }
-
-    // =================================
     if (!isValid(data.fname)) {
-      return res.status(400).send({ status: false, msg: "please Enter Valid Name" })
+      return res.status(400).send({ status: false, msg: "please Enter Valid fName" })
     }
+    else if (space(data.fname) == true) {
+      return res
+        .status(400)
+        .send({ status: false, msg: "fname cannot be a empty" });
+    }
+
+    if (!isValid(data.lname)) {
+      return res.status(400).send({ status: false, msg: "please Enter Valid lName" })
+    }
+    else if (space(data.fname) == true) {
+      return res
+        .status(400)
+        .send({ status: false, msg: "lname cannot be a empty" });
+    }
+
+    if (!isValid(data.title)) {
+      return res.status(400).send({ status: false, msg: "please Enter Valid Title" })
+    }
+    else if (space(data.fname) == true) {
+      return res
+        .status(400)
+        .send({ status: false, msg: "Title cannot be a empty" });
+    }
+
+
+    // EMAIL DUPLICAY AND SYNTAX OF IT
 
     if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))) {
       return res.status(400).send({ status: false, msg: "please Enter Valid Email" })
@@ -87,24 +92,25 @@ const loginAuthor = async function (req, res) {
       return res.status(400).send({ status: false, msg: " please Enter password" })
     }
 
-    let user = await authorModel.findOne({ 
-      emailId: username, 
-      password: password 
+    let user = await authorModel.findOne({
+      emailId: username,
+      password: password
     });
-    
-    if (!user) return res.status(400).send({ 
-      status: false, 
-      msg: " username or password is incorrect " 
+
+    if (!user) return res.status(400).send({
+      status: false,
+      msg: " username or password is incorrect "
     });
 
     // AUTHENTICATION BEGINS HERE===================
 
     let token = jwt.sign({
       // provide the things which are unique like object id
-        authorId: user._id.toString(),
-      },
+      authorId: user._id.toString(),
+    },
+      // secret key 
       "project_1"
-      );
+    );
 
     res.status(200).send({
       status: true,
