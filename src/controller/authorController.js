@@ -74,7 +74,7 @@ const getBlog = async function (req, res) {
 
 
 // UPDATE BLOG
-const Updateblog = async function (req, res) {
+const updateBlog = async function (req, res) {
 
   try {
     let title = req.body.title
@@ -144,20 +144,10 @@ const deleteBlogByParams = async function (req, res) {
 
 module.exports.createAuthor = createAuthor
 module.exports.createBlog = createBlog
-module.exports.Updateblog = Updateblog
+module.exports.updateBlog = updateBlog
 module.exports.getBlog = getBlog
 module.exports.deleteBlog = deleteBlog
 module.exports.deleteBlogByParams = deleteBlogByParams
 // new 
 // authentication and authorisation
 module.exports.loginAuthor = loginAuthor
-
-
-
-
-
-
-
-
-
-
