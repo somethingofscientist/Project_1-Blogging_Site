@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 const authorModel = require("../model/authorModel")
-const jwt =require ("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const blogModel = require("../model/blogModel")
 
 // CREATE AUTHOR
@@ -18,15 +18,39 @@ const createAuthor = async function (req, res) {
 
 // CREATE BLOG
 const createBlog = async function (req, res) {
-  try{
-  let data = req.body
-  if (!data.authorId) { return res.status(400).send("author Id Is Not Valid") }
-  const savedData = await blogModel.create(data)
-  res.status(201).send({ data: savedData })
-  }catch(error){
-    res.status(500).send({msg:error.message})
+  try {
+    let data = req.body
+    if (!data.authorId) { return res.status(400).send("author Id Is Not Valid") }
+    const savedData = await blogModel.create(data)
+    res.status(201).send({ data: savedData })
+  } catch (error) {
+    res.status(500).send({ msg: error.message })
   }
 }
+
+
+// AUTHENTICATION PART============================  
+const loginAuthor = async function (req, res) {
+  let username = req.body.emailId;
+  let password = req.body.password;
+
+  let user = await authorModel.findOne({ emailId: username, password: password });
+  if (!user)
+    return res.send({
+      status: false,
+      msg: " username or password is incorrect "
+    });
+
+  // AUTHENTICATION BEGINS HERE===================
+  let token = jwt.sign(
+    {
+      authorId: user._id.toString()
+    },
+    "project_1" //==========> secret key
+  );
+  res.setHeaders("x-auth-token", token);
+  res.send({ status: true, token: token });
+};
 
 
 // GET BLOG
@@ -85,12 +109,12 @@ const deleteBlog = async function (req, res) {
     if (!blogsDelete) return res.status(404).send({ msg: "Data Not Found" })
 
     res.status(200).send({ status: true, msg: blogsDelete })
-    }catch{
-      res.status(500).send({msg:"server error"})
-    }
+  } catch {
+    res.status(500).send({ msg: "server error" })
+  }
 }
 
-  
+
 
 // /DELETE BLOG BY PARAMS
 const deleteBlogByParams = async function (req, res) {
@@ -116,28 +140,7 @@ const deleteBlogByParams = async function (req, res) {
   }
 }
 
-    // AUTHENTICATION PART============================  
-    const loginAuthor = async function(req, res){
-      let username = req.body.emailId;
-      let password = req.body.password;
 
-      let user = await authorModel.findOne({ emailId: username , password: password});
-      if( !user )
-        return res.send({
-          status: false,
-          msg: " username or password is incorrect " 
-        });
-
-      // AUTHENTICATION BEGINS HERE===================
-      let token = jwt.sign(
-        {
-          authorId: user._id.toString()
-        },
-        "project_1" //==========> secret key
-      );
-      res.setHeaders("x-auth-token", token);
-      res.send({ status:true, token: token });
-    };
 
 module.exports.createAuthor = createAuthor
 module.exports.createBlog = createBlog

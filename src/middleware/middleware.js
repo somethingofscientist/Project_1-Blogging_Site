@@ -9,7 +9,7 @@ let mid1 = function (req, res, next){
 
     if(!token) return res.send({status:false , msg:"Token must be present"})
 
-    let decodedToken = jwt.verify(token,"Project-1")
+    let decodedToken = jwt.verify(token,"Project_1")
 
     if(!decodedToken) return res.send({msg:"Token is invalid"})
 
