@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const authorModel = require("../model/authorModel")
+const jwt =require ("jsonwebtoken");
 const blogModel = require("../model/blogModel")
 
 // CREATE AUTHOR
@@ -115,12 +116,28 @@ const deleteBlogByParams = async function (req, res) {
   }
 }
 
+    // AUTHENTICATION PART============================  
     const loginAuthor = async function(req, res){
       let username = req.body.emailId;
       let password = req.body.password;
 
-      let user = await authorModel.findOne({ emailId: username , password:password});
-    }
+      let user = await authorModel.findOne({ emailId: username , password: password});
+      if( !user )
+        return res.send({
+          status: false,
+          msg: " username or password is incorrect " 
+        });
+
+      // AUTHENTICATION BEGINS HERE===================
+      let token = jwt.sign(
+        {
+          authorId: user._id.toString()
+        },
+        "project_1" //==========> secret key
+      );
+      res.setHeaders("x-auth-token", token);
+      res.send({ status:true, token: token });
+    };
 
 module.exports.createAuthor = createAuthor
 module.exports.createBlog = createBlog

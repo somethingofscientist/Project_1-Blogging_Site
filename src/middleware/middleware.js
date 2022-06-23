@@ -1,4 +1,4 @@
-const jwt =require ("jasonwebtoken");
+const jwt =require ("jsonwebtoken");
 
 let mid1 = function (req, res, next){
 
@@ -14,6 +14,8 @@ let mid1 = function (req, res, next){
     if(!decodedToken) return res.send({msg:"Token is invalid"})
 
     console.log(decodedToken)
+
+    next()
 
 }
 
