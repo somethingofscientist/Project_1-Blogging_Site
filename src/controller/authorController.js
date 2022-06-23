@@ -1,47 +1,70 @@
 const mongoose = require("mongoose")
+const blogModel = require("../model/blogModel")
 const authorModel = require("../model/authorModel")
 const jwt = require("jsonwebtoken");
-const blogModel = require("../model/blogModel")
 
 
+// make a function for validation for the fname in the author
 
-const isValid = function (value)
- { if (typeof value === "undefined" || value === null ) return false 
- if (typeof value === "string" && value.trim().length === 0) return false 
- return true }
+const isValid = function (value) {
+  if (typeof value === "undefined" || value === Number || value === null) return false
+  if (typeof value === "string" && value.trim().length === 0) return false
+  return true
+}
 
 
-
-// aprit
+// Sahil
 // CREATE AUTHOR
 const createAuthor = async function (req, res) {
   try {
     let data = req.body
-    if(!isValid(data.fname)) {
-      return res.status(400).send({ status:false ,msg:"please Enter Valid Name" })
+
+    // function to validate empty spaces
+    function onlySpaces(str) {
+      return /^\s*$/.test(str);
     }
 
-    // if(!(/\d/.test(data.fname))) {
-    //   return res.status(404).send({ status:false ,msg:"please Enter Valid Name" })
+    // VALIDATION:
+    // fname validation
+    // if (!data.fname) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, msg: "Please Enter fname(required field) " });
+    // } 
+
+    // else if (onlySpaces(data.fname) == true) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, msg: "fname cannot be a empty" });
+    // } 
+
+    // else if (!isNaN(data.fname)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, msg: "fname cannot be a number" });
     // }
 
-    if(!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))) {
-      return res.status(400).send({ status:false ,msg:"please Enter Valid Email" })
+    // =================================
+    if (!isValid(data.fname)) {
+      return res.status(400).send({ status: false, msg: "please Enter Valid Name" })
     }
 
-    const isEmailPresent = await authorModel.findOne({ email:data.email})
-    if(isEmailPresent) {
-      return res.status(400).send({ status:false ,msg:"Email already exist" })
+    if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))) {
+      return res.status(400).send({ status: false, msg: "please Enter Valid Email" })
     }
 
-    // same catch paste
+    const isEmailPresent = await authorModel.findOne({ email: data.email })
+    if (isEmailPresent) {
+      return res.status(400).send({ status: false, msg: "Email already exist" })
+    }
+
     const savedData = await authorModel.create(data)
     return res.status(200).send({ data: savedData })
   }
 
   catch (err) {
-    return res.status(500).send({status:false,  data:err.message})
-}
+    return res.status(500).send({ status: false, data: err.message })
+  }
 
 }
 
@@ -79,17 +102,10 @@ const loginAuthor = async function (req, res) {
   }
 
   catch (err) {
-    res.status(500).send({
-      status: false,
-      msg: "Internal Server Error",
-      error: err.message,
-    });
+    return res.status(500).send({ status: false, data: err.message })
   }
 };
 
 
-
-// new 
-// authentication and authorisation
 module.exports.loginAuthor = loginAuthor
 module.exports.createAuthor = createAuthor

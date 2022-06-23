@@ -67,26 +67,16 @@ const mid1 = async function (req, res, next) {
                 msg: "Token required! Please login to generate token",
             });
 
-        // ==========================
-        // TA SESSION DOUBT 
-
-        // if (!token == true)
-        //     return res.status(400).send({
-        //         status: false,
-        //         msg: " sahil Invalid Token ",
-        //     });
-        // =========================
-
-        // if token is invalid
         let decodedToken = jwt.verify(token, "project_1");
         if (!decodedToken)
             return res.status(401).send({ status: false, msg: "token is invalid" });
 
         // if token is valid
         next();
-    } catch (err) {
-        res.status(500).send({ msg: "authentication Internal Server Error", error: err.message });
-    }
+    } 
+    catch (err) {
+        return res.status(500).send({ status: false, data: err.message })
+      }
 };
 
 const mid2 = async function (req, res, next) {
@@ -131,9 +121,10 @@ const mid2 = async function (req, res, next) {
         } else if (decodedToken.authorId === blog.authorId.toString()) {
             next();
         }
-    } catch (err) {
-        res.status(500).send({ msg: "authorisation Internal Server Error", error: err.message });
-    }
+    } 
+    catch (err) {
+        return res.status(500).send({ status: false, data: err.message })
+      }
 };
 
 module.exports = { mid1, mid2 };
