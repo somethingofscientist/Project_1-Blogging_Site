@@ -7,9 +7,11 @@ const blogModel = require("../model/blogModel")
 const createAuthor = async function (req, res) {
   try {
     let data = req.body
+    console.log(data)
+    
     const savedData = await authorModel.create(data)
     res.status(200).send({ data: savedData })
-  }
+}
   catch (error) {
     res.status(500).send({ msg: "Server Error" })
   }
