@@ -37,7 +37,7 @@ const createAuthor = async function (req, res) {
     if (!isValid(data.lname)) {
       return res.status(400).send({ status: false, msg: "please Enter Valid lName" })
     }
-    else if (space(data.fname) == true) {
+    else if (space(data.lname) == true) {
       return res
         .status(400)
         .send({ status: false, msg: "lname cannot be a empty" });
@@ -78,19 +78,18 @@ const createAuthor = async function (req, res) {
     }
 
 
-    // AUTHOR CREATED HERE
-
+    // end of edge cases
+    // create author
     const savedData = await authorModel.create(data)
     return res.status(200).send({ data: savedData })
   }
-
   catch (err) {
     return res.status(500).send({ status: false, data: err.message })
   }
 
 }
 
-// LOGIN USER OR AUTHOR ==========================
+// LOGIN AUTHOR ==========================
 // AUTHENTICATION PART ===========================  
 const loginAuthor = async function (req, res) {
 
@@ -124,6 +123,7 @@ const loginAuthor = async function (req, res) {
     let token = jwt.sign({
       // provide the things which are unique like object id
       authorId: user._id.toString(),
+      batch: "Radon",
     },
       // secret key 
       "project_1"
@@ -131,7 +131,7 @@ const loginAuthor = async function (req, res) {
 
     res.status(200).send({
       status: true,
-      token: "You Are Now Login In The App",
+      token: "You Are Login In The App",
       data: { token: token }
     });
   }
@@ -140,6 +140,30 @@ const loginAuthor = async function (req, res) {
     return res.status(500).send({ status: false, data: err.message })
   }
 };
+    // edges cases
+    // if (!username) {
+    //   return res.status(400).send({ status: false, msg: " please Enter Username" })
+    // }
+
+    // if (!password) {
+    //   return res.status(400).send({ status: false, msg: " please Enter password" })
+    // }
+
+    // line number 97 to 105 are from the above ===============================================
+
+    // if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))) {
+    //   return res.status(400).send({ status: false, msg: "please Enter Valid Email" })
+    // }
+
+    // const isEmailPresent = await authorModel.findOne({ email: data.email })
+
+    // if (isEmailPresent) {
+    //   return res.status(400).send({ status: false, msg: "EmailId Is Already Exist In DB" })
+    // }
+
+    // AUTHENTICATION BEGINS HERE===================
+
+
 
 
 module.exports.loginAuthor = loginAuthor

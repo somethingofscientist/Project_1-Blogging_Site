@@ -17,12 +17,12 @@ const blog = new mongoose.Schema({
         type: ObjectId,
         required: true,
         ref : "authorProject",
-        trim: true
     },
     tags: {
         type: [String],
         trim: true
     },
+    
     category:{
         type: [String],
         required: true,
@@ -32,6 +32,7 @@ const blog = new mongoose.Schema({
         type: [String],
         required: true,
         trim: true
+
     },
     isDeleted: {
         type: Boolean, 
