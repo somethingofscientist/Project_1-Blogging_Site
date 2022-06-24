@@ -43,26 +43,33 @@ const getBlog = async function (req, res) {
   }
 }
 
+// delete blogs ===================================================
 const deleteBlog = async function (req, res) {
   try 
   {
     let BlogId = req.params.blogId
+    let date = Date.now()
     let Blog = await blogModel.findById(BlogId)
     // added condition by sahil (isDeleted)
-    if(!Blog && isdeleted == false){
+    if( !Blog ){
       return res.status(404).send( {status:false, msg: "No Data Is Found"} )}
 
-    let hero = await blogModel.findOneAndUpdate(
+    let afterDeleted = await blogModel.findOneAndUpdate(
       { _id: BlogId },
-      { $set: {isDeleted:true, deletedAt: date}})
+      { $set: {isDeleted:true, deletedAt: date}},
+      {new:true})
 
-    return res.status(200).send({ status: true, msg:"Data Is Deleted!" })
+    return res.status(200).send({ status: true, msg:"Data Is Deleted", data:{afterDeleted} })
   }
   catch (err) 
   {
     return res.status(500).send({ status: false, data: err.message })
   }
 }
+
+
+
+//deleteby params are not get understand
 
 const deleteBlogsByQueryParams = async function (req, res) {
   try 
