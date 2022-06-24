@@ -1,7 +1,6 @@
 const mongoose = require("mongoose")
 const jwt = require("jsonwebtoken");
 const blogModel = require("../model/blogModel")
-const authorModel = require("../model/authorModel")
 // author model import krna hai
 
 
@@ -68,24 +67,24 @@ const deleteBlog = async function (req, res) {
 
 //deleteby params are not get understand
 
-const deleteBlogsByQueryParams = async function (req, res) {
-    try {
-        let BlogId = req.params.blogId
-        let Blog = await blogModel.findById(BlogId)
-        if (!Blog) {
-            return res.status(404).send({ status: false, msg: "No Data Is Found" })
-        }
+// const deleteBlogsByQueryParams = async function (req, res) {
+//     try {
+//         let BlogId = req.params.blogId
+//         let Blog = await blogModel.findById(BlogId)
+//         if (!Blog) {
+//             return res.status(404).send({ status: false, msg: "No Data Is Found" })
+//         }
 
-        let hero = await blogModel.findOneAndUpdate(
-            { _id: BlogId },
-            { $set: { isDeleted: true, deletedAt: date } })
+//         let hero = await blogModel.findOneAndUpdate(
+//             { _id: BlogId },
+//             { $set: { isDeleted: true, deletedAt: date } })
 
-        return res.status(200).send({ status: true, msg: "Data Is Deleted!" })
-    }
-    catch (err) {
-        return res.status(500).send({ status: false, data: err.message })
-    }
-}
+//         return res.status(200).send({ status: true, msg: "Data Is Deleted!" })
+//     }
+//     catch (err) {
+//         return res.status(500).send({ status: false, data: err.message })
+//     }
+// }
 
 
 const updateBlog = async function (req, res) {

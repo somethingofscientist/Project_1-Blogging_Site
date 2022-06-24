@@ -16,6 +16,9 @@ const isValid = function (value) {
 const createAuthor = async function (req, res) {
   try {
     let data = req.body
+    if (Object.keys(data).length == 0) {
+        return res.status(400).send({ msg: "Please provide blog details" })
+    }
 
     // function to validate empty spaces
     // By TA
@@ -46,7 +49,6 @@ const createAuthor = async function (req, res) {
     if (!isValid(data.title)) {
       return res.status(400).send({ status: false, msg: "please Enter Valid Title" })
     }
-    // fname >>>>>title krna hai
     else if (space(data.title) == true) {
       return res
         .status(400)
@@ -65,7 +67,7 @@ const createAuthor = async function (req, res) {
     if (isEmailPresent) {
       return res.status(400).send({ status: false, msg: "EmailId Is Already Exist In DB" })
     }
-// password Add krna hai
+
     // password validation
     if (!data.password) {
       return res
