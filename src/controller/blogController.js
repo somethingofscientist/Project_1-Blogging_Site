@@ -22,7 +22,6 @@ const getBlog = async function (req, res) {
   {
     let inputData = req.query.authorId
     if(inputData){
-      
       //TA SESSION CATEGORY DOUBT  LINE 27 & 33
         // let categorySelected = req.query.category
         let container = []
@@ -35,14 +34,50 @@ const getBlog = async function (req, res) {
               container.push(afterFilter)
               
         })
-
         return res.status(200).send({ data: container})
     }
-
   }
+  catch (err) 
+  {
+    return res.status(500).send({ status: false, data: err.message })
+  }
+}
 
+const deleteBlog = async function (req, res) {
+  try 
+  {
+    let BlogId = req.params.blogId
+    let Blog = await blogModel.findById(BlogId)
+    // added condition by sahil (isDeleted)
+    if(!Blog && isdeleted == false){
+      return res.status(404).send( {status:false, msg: "No Data Is Found"} )}
 
-  
+    let hero = await blogModel.findOneAndUpdate(
+      { _id: BlogId },
+      { $set: {isDeleted:true, deletedAt: date}})
+
+    return res.status(200).send({ status: true, msg:"Data Is Deleted!" })
+  }
+  catch (err) 
+  {
+    return res.status(500).send({ status: false, data: err.message })
+  }
+}
+
+const deleteBlogsByQueryParams = async function (req, res) {
+  try 
+  {
+    let BlogId = req.params.blogId
+    let Blog = await blogModel.findById(BlogId)
+    if(!Blog){
+      return res.status(404).send( {status:false, msg: "No Data Is Found"} )}
+
+    let hero = await blogModel.findOneAndUpdate(
+      { _id: BlogId },
+      { $set: {isDeleted:true, deletedAt: date}})
+
+    return res.status(200).send({ status: true, msg:"Data Is Deleted!" })
+  }
   catch (err) 
   {
     return res.status(500).send({ status: false, data: err.message })
@@ -51,3 +86,5 @@ const getBlog = async function (req, res) {
 
 module.exports.createBlog = createBlog
 module.exports.getBlog = getBlog
+module.exports.deleteBlog = deleteBlog
+module.exports.deleteBlogsByQueryParams = deleteBlogsByQueryParams

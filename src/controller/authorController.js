@@ -92,6 +92,26 @@ const loginAuthor = async function (req, res) {
       msg: " username or password is incorrect "
     });
 
+    let token = jwt.sign({
+      // provide the things which are unique like object id
+      authorId: user._id.toString(),
+      batch: "Radon",
+    },
+      // secret key 
+      "project_1"
+    );
+
+    res.status(200).send({
+      status: true,
+      token: "You Are Login In The App",
+      data: { token: token }
+    });
+  }
+
+  catch (err) {
+    return res.status(500).send({ status: false, data: err.message })
+  }
+};
     // edges cases
     // if (!username) {
     //   return res.status(400).send({ status: false, msg: " please Enter Username" })
@@ -115,25 +135,7 @@ const loginAuthor = async function (req, res) {
 
     // AUTHENTICATION BEGINS HERE===================
 
-    let token = jwt.sign({
-      // provide the things which are unique like object id
-      authorId: user._id.toString(),
-    },
-      // secret key 
-      "project_1"
-    );
 
-    res.status(200).send({
-      status: true,
-      token: "You Are Login In The App",
-      data: { token: token }
-    });
-  }
-
-  catch (err) {
-    return res.status(500).send({ status: false, data: err.message })
-  }
-};
 
 
 module.exports.loginAuthor = loginAuthor
