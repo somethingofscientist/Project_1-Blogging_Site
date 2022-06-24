@@ -9,7 +9,7 @@ const createBlog = async function (req, res) {
     try {
         let data = req.body
         if (!data.authorId) { return res.status(400).send("author Id is not valid") }
-        const savedData = await (await blogModel.create(data))
+        const savedData = await blogModel.create(data)
         res.status(201).send({ data: savedData })
     }
     catch (err) {
@@ -88,9 +88,6 @@ const deleteBlogsByQueryParams = async function (req, res) {
 }
 
 
-
-//----------------------------------------------------------------------------------------------------------------------------------------------------
-
 const updateBlog = async function (req, res) {
     try {
 
@@ -121,12 +118,9 @@ const updateBlog = async function (req, res) {
     }
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------
 
 module.exports.createBlog = createBlog
-module.exports.getBlogs = getBlogs
+module.exports.getBlog = getBlog
 module.exports.updateBlog = updateBlog
 module.exports.deleteBlog = deleteBlog
 // module.exports.deleteBlogsQueryParams = deleteBlogsQueryParams
