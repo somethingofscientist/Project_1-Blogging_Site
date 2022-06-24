@@ -22,15 +22,15 @@ const getBlog = async function (req, res) {
   {
     let inputData = req.query.authorId
     if(inputData){
-        let categorySelected = req.query.category
+      
+      //TA SESSION CATEGORY DOUBT  LINE 27 & 33
+        // let categorySelected = req.query.category
         let container = []
         let authorBlogs = await blogModel.find({ authorId : inputData }).populate("authorId")
         if(!authorBlogs) return res.status(404).send({msg: "no data found"})
 
-
         authorBlogs.filter(afterFilter => {
-          afterFilter.category = categorySelected
-          console.log(   afterFilter.category )
+          // afterFilter.category = categorySelected
           if(afterFilter.isDeleted == false && afterFilter.isPublished == false)
               container.push(afterFilter)
               
