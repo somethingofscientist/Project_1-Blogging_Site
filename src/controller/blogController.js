@@ -23,10 +23,9 @@ const getBlog = async function (req, res) {
     let inputData = req.query.authorId
     if(inputData){
         // let categorySelected = req.query.category
-        // let isDeleted =req.query.isDeleted
         let container = []
         let authorBlogs = await blogModel.find({ authorId : inputData })
-        // if(!authorBlogs) return res.status(404).send({msg: "no data found"})
+        if(!authorBlogs) return res.status(404).send({msg: "no data found"})
 
         authorBlogs.filter(afterFilter => {
           // afterFilter.category = categorySelected
@@ -37,6 +36,9 @@ const getBlog = async function (req, res) {
     }
 
   }
+
+
+  
   catch (err) 
   {
     return res.status(500).send({ status: false, data: err.message })

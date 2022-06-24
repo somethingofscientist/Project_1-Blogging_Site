@@ -36,7 +36,7 @@ const createAuthor = async function (req, res) {
     if (!isValid(data.lname)) {
       return res.status(400).send({ status: false, msg: "please Enter Valid lName" })
     }
-    else if (space(data.fname) == true) {
+    else if (space(data.lname) == true) {
       return res
         .status(400)
         .send({ status: false, msg: "lname cannot be a empty" });
@@ -45,7 +45,7 @@ const createAuthor = async function (req, res) {
     if (!isValid(data.title)) {
       return res.status(400).send({ status: false, msg: "please Enter Valid Title" })
     }
-    else if (space(data.fname) == true) {
+    else if (space(data.title) == true) {
       return res
         .status(400)
         .send({ status: false, msg: "Title cannot be a empty" });
@@ -69,7 +69,6 @@ const createAuthor = async function (req, res) {
     const savedData = await authorModel.create(data)
     return res.status(200).send({ data: savedData })
   }
-
   catch (err) {
     return res.status(500).send({ status: false, data: err.message })
   }
@@ -126,7 +125,7 @@ const loginAuthor = async function (req, res) {
 
     res.status(200).send({
       status: true,
-      token: "You Are Now Login In The App",
+      token: "You Are Login In The App",
       data: { token: token }
     });
   }
