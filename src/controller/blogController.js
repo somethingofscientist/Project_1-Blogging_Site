@@ -8,7 +8,7 @@ const createBlog = async function (req, res) {
   {
     let data = req.body
     if(!data.authorId) {return res.status(400).send ("author Id is not valid")}
-    const savedData = await blogModel.create(data)
+    const savedData = await (await blogModel.create(data))
     res.status(201).send({ data : savedData })
   }
   catch (err) 
@@ -22,16 +22,20 @@ const getBlog = async function (req, res) {
   {
     let inputData = req.query.authorId
     if(inputData){
-        // let categorySelected = req.query.category
+        let categorySelected = req.query.category
         let container = []
-        let authorBlogs = await blogModel.find({ authorId : inputData })
+        let authorBlogs = await blogModel.find({ authorId : inputData }).populate("authorId")
         if(!authorBlogs) return res.status(404).send({msg: "no data found"})
 
+
         authorBlogs.filter(afterFilter => {
-          // afterFilter.category = categorySelected
+          afterFilter.category = categorySelected
+          console.log(   afterFilter.category )
           if(afterFilter.isDeleted == false && afterFilter.isPublished == false)
               container.push(afterFilter)
+              
         })
+
         return res.status(200).send({ data: container})
     }
 
