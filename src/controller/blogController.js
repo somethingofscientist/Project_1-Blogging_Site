@@ -30,7 +30,7 @@ const getBlog = async function (req, res) {
 
         authorBlogs.filter(afterFilter => {
           // afterFilter.category = categorySelected
-          if(afterFilter.isDeleted == false)
+          if(afterFilter.isDeleted == false && afterFilter.isPublished == false)
               container.push(afterFilter)
         })
         return res.status(200).send({ data: container})
