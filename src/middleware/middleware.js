@@ -1,26 +1,24 @@
-
-
-
-// ===========================================================================
-
 const jwt = require("jsonwebtoken");
 const blogModel = require("../model/blogModel");
 
 const mid1 = async function (req, res, next) {
-    try
-    {
+    try {
         let token = req.headers["x-Api-key"];
         if (!token) token = req.headers["x-api-key"];
 
+        // TOKEN IS NOT PRESENT 
         if (!token)
             return res.status(400).send({
                 status: false,
                 msg: "Token Is Not Present",
             });
-
+        
+        // TOKEN IS INVALID
         let decodedToken = jwt.verify(token, "project_1")
         if (!decodedToken)
             return res.status(401).send({ status: false, msg: "token is invalid" })
+
+            
         next();
     }
     catch (err) {
@@ -32,7 +30,7 @@ const mid2 = async function (req, res, next) {
     try {
         // token sent in request header "x-api-key"
         let token = req.headers["x-api-key"];
-        
+
         let decodedToken = jwt.verify(token, "project_1");
 
         // blogId sent through path variable

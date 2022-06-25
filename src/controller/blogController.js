@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const blogModel = require("../model/blogModel");
 const authorModel = require("../model/authorModel");
-// author model import krna hai
 
 
 const createBlog = async function (req, res) {
@@ -10,10 +9,11 @@ const createBlog = async function (req, res) {
     let data = req.body
 
     if (Object.keys(data).length == 0) {
-      return res.status(400).send ({ status: false, msg: "Please provide blog details" }) }
+      return res.status(400).send({ status: false, msg: "Please provide blog details" })
+    }
 
-      // destructure from params
-    const {title, body, authorId, tags, category} = data ;
+    // destructure from params
+    const { title, body, authorId, tags, category } = data;
 
     if (!authorId) { return res.status(400).send(" Blog Author Id is not valid") }
 
@@ -27,7 +27,7 @@ const createBlog = async function (req, res) {
 
     const createAuthor = await authorModel.findById(authorId)
 
-    if(!createAuthor) {return res.status(400).send({msg:"author is not valid"})}
+    if (!createAuthor) { return res.status(400).send({ msg: "author is not valid" }) }
 
     const savedData = await blogModel.create(data)
     res.status(201).send({ data: savedData })
@@ -66,7 +66,8 @@ const updateBlog = async function (req, res) {
     let data = req.body
     let BlogId = req.params.blogId;
     if (Object.keys(data).length == 0) {
-      return res.status(400).send ({ status: false, msg: "Please provide blog details" }) }
+      return res.status(400).send({ status: false, msg: "Please provide blog details" })
+    }
 
     let title = req.body.title
     let body = req.body.body
@@ -75,9 +76,13 @@ const updateBlog = async function (req, res) {
     let date1 = new Date()
 
     const updateZBlog = await blogModel.findOneAndUpdate({ _id: BlogId, isDeleted: false },
-        { $set: { title: title, body: body, tags: tags, subcategory: subcategory, isPublished: true,
-           publishedAt: date1 } },
-        { new: true });
+      {
+        $set: {
+          title: title, body: body, tags: tags, subcategory: subcategory, isPublished: true,
+          publishedAt: date1
+        }
+      },
+      { new: true });
 
     res.status(200).send({ status: true, data: updateZBlog })
 
@@ -97,10 +102,29 @@ const deleteBlog = async function (req, res) {
     let BlogId = req.params.blogId
     let date = Date.now()
     let Blog = await blogModel.findById(BlogId)
-    // added condition by sahil (isDeleted)
-    if (!Blog) {
-      return res.status(404).send({ status: false, msg: "No Data Is Found" })
+
+    let check = await blogModel.findOne(
+      { _id: BlogId },
+      {
+        isDeleted: 1,
+        _id: 0,
+      });
+
+    //IF THE BLOG IS ALREADY DELETED   ???? BY TA ????
+    if (check && check.isDeleted) {
+      return res.status(404).send({ status: false, msg: "ALREADY DELETED" })
     }
+
+    // WHEN WE PROVIDE WRONG ID
+    if (!Blog) {
+      return res.status(404).send({ status: false, msg: "BlogId Not Exist In DB" })
+    }
+
+    // WHEN WE PROVIDE HALF ID             STILL DOUBT 
+    if (Blog == false) {
+      return res.status(404).send({ status: false, msg: "BlogId Not Exist In DB" })
+    }
+
 
     let afterDeleted = await blogModel.findOneAndUpdate(
       { _id: BlogId },

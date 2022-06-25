@@ -4,22 +4,28 @@ const authors = require("../controller/authorController")
 const blogs = require("../controller/blogController")
 const middleware = require("../middleware/middleware")
 
-router.get("/test",  function (req, res) { res.send(" PROJECT 1 BLOGGING BACKEND ") })
 
-// AUTHOR CONTROLLER
-router.post("/authors",authors.createAuthor)
-//NEW 
+// LOGIN AUTHOR
 router.post("/login", authors.loginAuthor)
 
-// BLOG CONTROLLER
-router.post("/blogs", middleware.mid1, blogs.createBlog)
-router.get("/blogs", middleware.mid1, blogs.getBlog)
-router.put("/blogs/:blogId", middleware.mid1,blogs.updateBlog)
-router.delete("/deleteBlog/:blogId", middleware.mid1, blogs.deleteBlog)
-// router.delete("/deleteBlogsQueryParams", middleware.mid1, blogs.deleteBlogsQueryParams)
+// CREATE AUTHOR
+router.post("/authors",authors.createAuthor)
 
+// CREATE BLOG
+router.post("/blogs", middleware.mid1, blogs.createBlog)
+
+// GET BLOG
+router.get("/blogs", middleware.mid1, blogs.getBlog)
+
+// UPDATE BLOG
+router.put("/blogs/:blogId", middleware.mid1,blogs.updateBlog)
+
+// DELETE BLOG
+router.delete("/deleteBlog/:blogId", middleware.mid1, blogs.deleteBlog)
+
+
+// router.delete("/deleteBlogsQueryParams", middleware.mid1, blogs.deleteBlogsQueryParams)
 // router.delete("/deleteBlogsByQueryParams",blogs.deleteBlogsByQueryParams)
-// router.put("/updateBlog/:blogId", middleware.mid1, blogs.updateBlog)
 
 
 module.exports = router;
