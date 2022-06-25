@@ -12,7 +12,7 @@ router.post("/authors",authors.createAuthor)
 router.post("/login", authors.loginAuthor)
 
 // BLOG CONTROLLER
-router.post("/blogs", middleware.mid1, blogs.createBlog)
+router.post("/blogs", blogs.createBlog)
 router.get("/blogs", middleware.mid1, blogs.getBlog)
 router.put("/blogs/:blogId", middleware.mid1,middleware.mid2, blogs.updateBlog)
 router.delete("/deleteBlog/:blogId", middleware.mid1, blogs.deleteBlog)
