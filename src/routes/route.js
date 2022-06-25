@@ -14,7 +14,7 @@ router.post("/login", authors.loginAuthor)
 // BLOG CONTROLLER
 router.post("/blogs", middleware.mid1, blogs.createBlog)
 router.get("/blogs", middleware.mid1, blogs.getBlog)
-router.put("/blogs/:blogId", middleware.mid1,middleware.mid2, blogs.updateBlog)
+router.put("/blogs/:blogId", middleware.mid1,blogs.updateBlog)
 router.delete("/deleteBlog/:blogId", middleware.mid1, blogs.deleteBlog)
 // router.delete("/deleteBlogsQueryParams", middleware.mid1, blogs.deleteBlogsQueryParams)
 
