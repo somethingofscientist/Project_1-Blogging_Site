@@ -50,10 +50,10 @@ const getBlog = async function (req, res) {
       authorBlogs.filter(afterFilter => {
         // afterFilter.category = categorySelected
         if (afterFilter.isDeleted == false && afterFilter.isPublished == false)
-          container.push(afterFilter)
+        container.push(afterFilter)
 
       })
-      return res.status(200).send({ data: container })
+      return res.status(200).send({ data: container, msg:authorBlogs })
     }
   }
   catch (err) {
@@ -120,12 +120,6 @@ const deleteBlog = async function (req, res) {
       return res.status(404).send({ status: false, msg: "BlogId Not Exist In DB" })
     }
 
-    // WHEN WE PROVIDE HALF ID             STILL DOUBT 
-    if (Blog == false) {
-      return res.status(404).send({ status: false, msg: "BlogId Not Exist In DB" })
-    }
-
-
     let afterDeleted = await blogModel.findOneAndUpdate(
       { _id: BlogId },
       { $set: { isDeleted: true, deletedAt: date } },
@@ -138,28 +132,6 @@ const deleteBlog = async function (req, res) {
   }
 }
 
-
-
-//deleteby params are not get understand
-
-// const deleteBlogsByQueryParams = async function (req, res) {
-//     try {
-//         let BlogId = req.params.blogId
-//         let Blog = await blogModel.findById(BlogId)
-//         if (!Blog) {
-//             return res.status(404).send({ status: false, msg: "No Data Is Found" })
-//         }
-
-//         let hero = await blogModel.findOneAndUpdate(
-//             { _id: BlogId },
-//             { $set: { isDeleted: true, deletedAt: date } })
-
-//         return res.status(200).send({ status: true, msg: "Data Is Deleted!" })
-//     }
-//     catch (err) {
-//         return res.status(500).send({ status: false, data: err.message })
-//     }
-// }
 
 module.exports.createBlog = createBlog
 module.exports.getBlog = getBlog
