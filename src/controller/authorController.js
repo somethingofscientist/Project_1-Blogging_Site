@@ -17,11 +17,11 @@ const createAuthor = async function (req, res) {
   try {
     let data = req.body
     if (Object.keys(data).length == 0) {
-        return res.status(400).send({ msg: "Please provide blog details" })
+      return res.status(400).send({ msg: "Please provide blog details" })
     }
 
     // function to validate empty spaces
-    // By TA
+    // By TA REGEX
     function space(str) {
       return /^\s*$/.test(str);
     }
@@ -85,6 +85,7 @@ const createAuthor = async function (req, res) {
     const savedData = await authorModel.create(data)
     return res.status(200).send({ data: savedData })
   }
+
   catch (err) {
     return res.status(500).send({ status: false, data: err.message })
   }
@@ -99,12 +100,12 @@ const loginAuthor = async function (req, res) {
     let username = req.body.emailId;
     let password = req.body.password;
 
-    
+
     // // edges cases
     // if (!username) {
     //   return res.status(400).send({ status: false, msg: " please Enter valid email" })
     // }
-    
+
     // if (!password) {
     //   return res.status(400).send({ status: false, msg: " please Enter valid password" })
     // }
@@ -117,8 +118,6 @@ const loginAuthor = async function (req, res) {
       status: false,
       msg: " username or password is incorrect "
     });
-
-
 
     // AUTHENTICATION BEGINS HERE===================
 
@@ -142,28 +141,28 @@ const loginAuthor = async function (req, res) {
     return res.status(500).send({ status: false, data: err.message })
   }
 };
-    // edges cases
-    // if (!username) {
-    //   return res.status(400).send({ status: false, msg: " please Enter Username" })
-    // }
+// edges cases
+// if (!username) {
+//   return res.status(400).send({ status: false, msg: " please Enter Username" })
+// }
 
-    // if (!password) {
-    //   return res.status(400).send({ status: false, msg: " please Enter password" })
-    // }
+// if (!password) {
+//   return res.status(400).send({ status: false, msg: " please Enter password" })
+// }
 
-    // line number 97 to 105 are from the above ===============================================
+// line number 97 to 105 are from the above ===============================================
 
-    // if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))) {
-    //   return res.status(400).send({ status: false, msg: "please Enter Valid Email" })
-    // }
+// if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))) {
+//   return res.status(400).send({ status: false, msg: "please Enter Valid Email" })
+// }
 
-    // const isEmailPresent = await authorModel.findOne({ email: data.email })
+// const isEmailPresent = await authorModel.findOne({ email: data.email })
 
-    // if (isEmailPresent) {
-    //   return res.status(400).send({ status: false, msg: "EmailId Is Already Exist In DB" })
-    // }
+// if (isEmailPresent) {
+//   return res.status(400).send({ status: false, msg: "EmailId Is Already Exist In DB" })
+// }
 
-    // AUTHENTICATION BEGINS HERE===================
+// AUTHENTICATION BEGINS HERE===================
 
 
 

@@ -1,5 +1,10 @@
+const mongoose = require("mongoose")
 const jwt = require("jsonwebtoken");
 const blogModel = require("../model/blogModel");
+
+const isValidObjectId = (ObjectId) => {
+    return mongoose.Types.ObjectId.isValid(ObjectId)
+}
 
 const mid1 = async function (req, res, next) {
     try {
@@ -18,7 +23,9 @@ const mid1 = async function (req, res, next) {
         if (!decodedToken)
             return res.status(401).send({ status: false, msg: "token is invalid" })
 
-            
+        req["x-api-key"] = req.headers["x-api-key"]
+        req["authorId"] = decodedToken.authorId
+
         next();
     }
     catch (err) {
@@ -28,44 +35,39 @@ const mid1 = async function (req, res, next) {
 
 const mid2 = async function (req, res, next) {
     try {
-        // token sent in request header "x-api-key"
-        let token = req.headers["x-api-key"];
 
-        let decodedToken = jwt.verify(token, "project_1");
+        let Inuser = req.authorId
 
-        // blogId sent through path variable
-        let blogId = req.params.blogId;
+        let authorlogging;
 
-        // CASE-1: blogId is empty
-        if (blogId.length == 0) {
-            return res
-                .status(400)
-                .send({ status: false, msg: "Your Blog Id Is Empty" });
+        if (req.body.hasOwnProperty("authorId")) {
+
+            if (!isValidObjectId(req.body.authorId))
+                return res.status(400).send({ msg: "Enter valid authorId" })
+
+            authorlogging = req.body.authorId
         }
-        // CASE-2: blogId is not an ObjectId
-        else if (!mongoose.Types.ObjectId.isValid(blogId)) {
-            return res.status(400).send({ status: false, msg: "blogId is invalid!" });
+        else if (req.params.hasOwnProperty("blogId")) {
+
+            if (!isValidObjectId(req.params.blogId))
+                return res.status(400).send({ msg: "Enter valid blogId" })
+
+            let blogData1 = await blogModel.findById(req.params.blogId)
+
+            if (!blogData1) {
+                return res.status(404).send({ status: false, msg: "please check id" })
+            }
+            authorlogging = blogData1.authorId.toString()
         }
-        // CASE-3: blogId is not present in the database
-        let blog = await blogModel
-            .findOne({ _id: blogId })
-            .select({ authorId: 1, _id: 0 });
-        // if blog is null => we can't use Object.keys(blog).length to validate, hence, we use !blog to validate
-        if (!blog) {
-            return res.status(400).send({
-                status: false,
-                msg: "Given blogId does not exist!",
-            });
-        }
+        if (!authorlogging)
+            return res.status(400).send({ msg: "AuthorId is required" })
 
         // Authorisation: authorId in token is compared with authorId against blogId
-        if (decodedToken.authorId !== blog.authorId.toString()) {
-            return res
-                .status(401)
-                .send({ status: false, msg: "Authorisation Failed!" });
-        } else if (decodedToken.authorId === blog.authorId.toString()) {
-            next();
+        if (Inuser !== authorlogging) {
+            return res.status(403).send({ status: false, msg: "Authorisation Failed!" });
         }
+        
+        next()
     }
     catch (err) {
         return res.status(500).send({ status: false, data: err.message })
@@ -74,5 +76,3 @@ const mid2 = async function (req, res, next) {
 
 module.exports.mid1 = mid1
 module.exports.mid2 = mid2
-
-
