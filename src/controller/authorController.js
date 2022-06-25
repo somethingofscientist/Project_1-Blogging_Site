@@ -96,18 +96,12 @@ const createAuthor = async function (req, res) {
 const loginAuthor = async function (req, res) {
 
   try {
+
     let username = req.body.emailId;
     let password = req.body.password;
 
     
-    // // edges cases
-    // if (!username) {
-    //   return res.status(400).send({ status: false, msg: " please Enter valid email" })
-    // }
     
-    // if (!password) {
-    //   return res.status(400).send({ status: false, msg: " please Enter valid password" })
-    // }
     let user = await authorModel.findOne({
       emailId: username,
       password: password
@@ -142,31 +136,9 @@ const loginAuthor = async function (req, res) {
     return res.status(500).send({ status: false, data: err.message })
   }
 };
-    // edges cases
-    // if (!username) {
-    //   return res.status(400).send({ status: false, msg: " please Enter Username" })
-    // }
-
-    // if (!password) {
-    //   return res.status(400).send({ status: false, msg: " please Enter password" })
-    // }
-
-    // line number 97 to 105 are from the above ===============================================
-
-    // if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))) {
-    //   return res.status(400).send({ status: false, msg: "please Enter Valid Email" })
-    // }
-
-    // const isEmailPresent = await authorModel.findOne({ email: data.email })
-
-    // if (isEmailPresent) {
-    //   return res.status(400).send({ status: false, msg: "EmailId Is Already Exist In DB" })
-    // }
-
-    // AUTHENTICATION BEGINS HERE===================
-
-
-
 
 module.exports.loginAuthor = loginAuthor
 module.exports.createAuthor = createAuthor
+  
+
+

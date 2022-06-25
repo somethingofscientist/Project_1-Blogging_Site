@@ -7,6 +7,7 @@ const { query } = require("express");
 
 const createBlog = async function (req, res) {
     try {
+
         let data = req.body
 
         if (Object.keys(data).length == 0) {
@@ -126,7 +127,7 @@ const updateBlog = async function (req, res) {
 const deleteBlog = async function (req, res) {
     try {
         let BlogId = req.params.blogId
-        let date = Date.now()
+        let date = new Date()
         let Blog = await blogModel.findById(BlogId)
         // added condition by sahil (isDeleted)
         if (!Blog) {
