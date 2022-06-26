@@ -56,7 +56,7 @@ const createAuthor = async function (req, res) {
     }
 
 
-    // EMAIL DUPLICAY AND SYNTAX OF IT
+    // EMAIL DUPLICAY AND SYNTAX OF IT BY TA
 
     if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))) {
       return res.status(400).send({ status: false, msg: "please Enter Valid Email" })
@@ -73,14 +73,13 @@ const createAuthor = async function (req, res) {
       return res
         .status(400)
         .send({ status: false, msg: " Please enter password(required field)" });
-    } else if (space(data.password) == true) {
+    } 
+    else if (space(data.password) == true) {
       return res
         .status(400)
         .send({ status: false, msg: "password cannot be a empty" });
     }
 
-
-    // end of edge cases
     // create author
     const savedData = await authorModel.create(data)
     return res.status(200).send({ data: savedData })
@@ -93,31 +92,24 @@ const createAuthor = async function (req, res) {
 }
 
 // LOGIN AUTHOR ==========================
-// AUTHENTICATION PART ===========================  
 const loginAuthor = async function (req, res) {
-
   try {
-    let username = req.body.emailId;
-    let password = req.body.password;
+    // req.body.email is used in postman it can be change both sides
+    let username = req.body.email
+    let password = req.body.password
 
 
-    // // edges cases
-    // if (!username) {
-    //   return res.status(400).send({ status: false, msg: " please Enter valid email" })
-    // }
-
-    // if (!password) {
-    //   return res.status(400).send({ status: false, msg: " please Enter valid password" })
-    // }
     let user = await authorModel.findOne({
-      emailId: username,
+      email: username,
       password: password
-    });
+    })
+   
 
     if (!user) return res.status(400).send({
       status: false,
       msg: " username or password is incorrect "
-    });
+    })
+
 
     // AUTHENTICATION BEGINS HERE===================
 
@@ -138,34 +130,9 @@ const loginAuthor = async function (req, res) {
   }
 
   catch (err) {
-    return res.status(500).send({ status: false, data: err.message })
+    return res.status(500).send({ status: false, data0: err.name,data1: err.message })
   }
-};
-// edges cases
-// if (!username) {
-//   return res.status(400).send({ status: false, msg: " please Enter Username" })
-// }
-
-// if (!password) {
-//   return res.status(400).send({ status: false, msg: " please Enter password" })
-// }
-
-// line number 97 to 105 are from the above ===============================================
-
-// if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))) {
-//   return res.status(400).send({ status: false, msg: "please Enter Valid Email" })
-// }
-
-// const isEmailPresent = await authorModel.findOne({ email: data.email })
-
-// if (isEmailPresent) {
-//   return res.status(400).send({ status: false, msg: "EmailId Is Already Exist In DB" })
-// }
-
-// AUTHENTICATION BEGINS HERE===================
-
-
-
+}
 
 module.exports.loginAuthor = loginAuthor
 module.exports.createAuthor = createAuthor
