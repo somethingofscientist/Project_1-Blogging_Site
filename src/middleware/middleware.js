@@ -1,8 +1,6 @@
-
 const mongoose = require("mongoose")
 const jwt = require("jsonwebtoken");
 const blogModel = require("../model/blogModel");
-
 
 const isValidObjectId = (ObjectId) => {
     return mongoose.Types.ObjectId.isValid(ObjectId)
@@ -11,8 +9,10 @@ const isValidObjectId = (ObjectId) => {
 const mid1 = async function (req, res, next) {
     try {
         let token = req.headers["x-Api-key"];
+
         if (!token) token = req.headers["x-api-key"];
 
+        // TOKEN IS NOT PRESENT 
         if (!token)
             return res.status(400).send({
                 status: false,
@@ -20,67 +20,96 @@ const mid1 = async function (req, res, next) {
             });
 
         let decodedToken = jwt.verify(token, "project_1")
+
+        // TOKEN IS INVALID
         if (!decodedToken)
-            return res.status(401).send({ status: false, msg: "token is invalid" })
+            return res.status(401).send({
+                status: false,
+                msg: "token is invalid"
+            })
 
         req["x-api-key"] = req.headers["x-api-key"]
         req["authorId"] = decodedToken.authorId
+
         next();
     }
     catch (err) {
-        return res.status(500).send({ status: false, data: err.message })
+        return res.status(500).send({
+            status: false,
+            data: err.message
+        })
     }
 };
 
 const mid2 = async function (req, res, next) {
     try {
-
         let Inuser = req.authorId
+        console.log(Inuser)
 
         let authorlogging;
 
         if (req.body.hasOwnProperty("authorId")) {
 
             if (!isValidObjectId(req.body.authorId))
-                return res.status(400).send({ msg: "Enter valid authorId" })
+
+                return res.status(400).send({
+                    status: false,
+                    msg: "Enter valid authorId"
+                })
 
             authorlogging = req.body.authorId
         }
         else if (req.params.hasOwnProperty("blogId")) {
 
             if (!isValidObjectId(req.params.blogId))
-                return res.status(400).send({ msg: "Enter valid blogId" })
+
+                return res.status(400).send({
+                    status: false,
+                    msg: "Enter valid blogId"
+                })
 
             let blogData1 = await blogModel.findById(req.params.blogId)
 
             if (!blogData1) {
-                return res.status(404).send({ status: false, msg: "please check id" })
+
+                return res.status(404).send({
+                    status: false,
+                    msg: "please check Blog id"
+                })
             }
+
             authorlogging = blogData1.authorId.toString()
         }
+
         if (!authorlogging)
-            return res.status(400).send({ msg: "AuthorId is required" })
+
+            return res.status(400).send({
+                status: false,
+                msg: "AuthorId is required"
+            })
 
         // Authorisation: authorId in token is compared with authorId against blogId
-        if (Inuser !== authorlogging) {
-            return res.status(403).send({ status: false, msg: "Authorisation Failed!" });
 
+        if (Inuser !== authorlogging) {
+
+            return res.status(403).send({
+                status: false,
+                msg: "Authorisation Failed!"
+            });
         }
+
         next()
     }
     catch (err) {
-        return res.status(500).send({ status: false, data: err.message })
+        return res.status(500).send({
+            status: false,
+            data: err.message
+        })
     }
 };
 
 module.exports.mid1 = mid1
 module.exports.mid2 = mid2
-
-
-
-
-
-
 
 
 

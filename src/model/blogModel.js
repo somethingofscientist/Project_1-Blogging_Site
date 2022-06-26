@@ -32,7 +32,6 @@ const blog = new mongoose.Schema({
         type: [String],
         required: true,
         trim: true
-
     },
     isDeleted: {
         type: Boolean, 
@@ -53,4 +52,4 @@ const blog = new mongoose.Schema({
     
 }, { timestamps: true } );
 
-module.exports = mongoose.model('blogProject', blog) //BlogProjects
+module.exports = mongoose.model('Project 1 Blogging', blog) //BlogProjects
