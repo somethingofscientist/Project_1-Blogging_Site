@@ -37,38 +37,68 @@ const createBlog = async function (req, res) {
 }
 
 const getBlog = async function (req, res){
-    
     try{
-      let data = req.query.authorId
-      if(data) {
-          let categorySel = req.query.category
-          let blogsData = []
-          let blogs = await blogModel.find({  authorId:data })
-          if(!blogs) return res.status(404).send({ msg: "No Data Found"})
+      
+    let authorid    = req.query.authorId
+    let category    = req.query.category
+    let tags        = req.query.tags
+    let subcategory = req.query.subcategory
 
-          blogs.filter(afterFilter =>{
-            afterFilter.category = categorySel
+    let data = await blogModel.find({ isDeleted: false, isPublished: true }).populate("authorId")
+    
+    // EDGE CASES
+    // IF SOME FIELDS ARE EMPTY
+    if (!authorid && !category && !tags && !subcategory) {
+    return res.status(200).send( {status: true,msg: "SOME FIELDS ARE EMPTY",data: data} )}
 
-         // if( !categorySel) return res.status(404).send({msg: "no Category is there"})
+    // IF BLOG IS DELETED
+    if(blogModel.find({isDeleted:true}))
+    {return res.status(200).send( {status: true,msg: "Blog Is Deleted",data: data} )}
+    
+    
 
-            if( afterFilter.isDeleted == false && afterFilter.isPublished == true )
-                blogsData.push(afterFilter)
-         })
+    } 
 
-          return res.status(200).send({ data1: blogsData })
-
-        }
-        else {
-            let blogs = await blogModel.find({ isDeleted : false , isPublished: true })
-            return res.status(200).send({ data2: blogs })
-        }
-      }
-
- 
     catch(error){
       return res.status(500).send({ status: false, data: err.message })
     }
-}
+
+
+  }
+
+
+
+
+
+    // try{
+    //   let data = req.query.authorId
+    //   if(data) {
+    //       let categorySel = req.query.category
+    //       let blogsData = []
+    //       let blogs = await blogModel.find({  authorId:data }).populate("authorId")
+    //       if(!blogs) return res.status(404).send({ msg: "No Data Found"})
+
+    //       blogs.filter(afterFilter =>{
+    //         afterFilter.category = categorySel
+
+    //      // if( !categorySel) return res.status(404).send({msg: "no Category is there"})
+
+    //         if( afterFilter.isDeleted == false && afterFilter.isPublished == true )
+    //             blogsData.push(afterFilter)
+    //      })
+
+    //       return res.status(200).send({ data1: blogsData })
+
+    //     }
+    //     else {
+    //         let blogs = await blogModel.find({ isDeleted : false , isPublished: true })
+    //         return res.status(200).send({ data2: blogs })
+    //     }
+    //   }
+
+ 
+
+
   
 
 const updateBlog = async function (req, res) {
