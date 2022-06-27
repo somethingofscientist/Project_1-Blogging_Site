@@ -6,7 +6,7 @@ const isValidObjectId = (ObjectId) => {
     return mongoose.Types.ObjectId.isValid(ObjectId)
 }
 
-const mid1 = async function (req, res, next) {
+const authentication = async function (req, res, next) {
     try {
         let token = req.headers["x-Api-key"];
 
@@ -41,7 +41,7 @@ const mid1 = async function (req, res, next) {
     }
 };
 
-const mid2 = async function (req, res, next) {
+const authorization = async function (req, res, next) {
     try {
         let Inuser = req.authorId
         console.log(Inuser)
@@ -108,8 +108,8 @@ const mid2 = async function (req, res, next) {
     }
 };
 
-module.exports.mid1 = mid1
-module.exports.mid2 = mid2
+module.exports.authentication = authentication
+module.exports.authorization = authorization
 
 
 

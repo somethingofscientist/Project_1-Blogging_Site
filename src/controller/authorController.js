@@ -120,11 +120,11 @@ const createAuthor = async function (req, res) {
 const loginAuthor = async function (req, res) {
   try {
 
-    let username = req.body.emailId;
+    let username = req.body.email;
     let password = req.body.password;
 
     let user = await authorModel.findOne({
-      emailId: username,
+      email: username,
       password: password
     });
 
