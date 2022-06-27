@@ -16,7 +16,7 @@ router.post("/login", authors.loginAuthor) //no need to enter token
 router.post("/blogs", blogs.createBlog) //no need to enter token
 
 // GET BLOG
-router.get("/blogs", middleware.authentication, blogs.getBlog) //authentication
+router.get("/blogs", middleware.authentication, blogs.getBlog)
 
 // UPDATE BLOG
 router.put("/blogs/:blogId", middleware.authentication, middleware.authorization,  blogs.updateBlog)
