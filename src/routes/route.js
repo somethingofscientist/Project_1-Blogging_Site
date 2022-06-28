@@ -17,11 +17,6 @@ router.post("/blogs", blogs.createBlog) //no need to enter token
 
 router.get("/blogs", middleware.authentication, blogs.getBlog)
 
-
-// GET BLOG
-// router.get("/blogs", middleware.mid1, blogs.getBlog) 
-
-
 // UPDATE BLOG
 router.put("/blogs/:blogId", middleware.authentication, middleware.authorization,  blogs.updateBlog)
 
@@ -30,6 +25,8 @@ router.delete("/deleteBlog/:blogId", middleware.authentication,middleware.author
 
 // DELETE BLOG BY PARAMS
 router.delete("/blogs", middleware.authentication, blogs.deleteBlogsQueryParams)
+
+
 
 
 

@@ -68,7 +68,8 @@ const createAuthor = async function (req, res) {
         .send({ status: false, msg: "Title cannot be a empty" });
     }
 
-    // EMAIL DUPLICAY AND SYNTAX OF IT
+
+    // EMAIL DUPLICAY AND SYNTAX OF IT BY TA
 
 
     if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))) {
@@ -86,18 +87,16 @@ const createAuthor = async function (req, res) {
 
     // password validation
     if (!data.password) {
-      return res.status(400).send({
-        status: false,
-        msg: " Please enter password(required field)"
-      });
-    } else if (space(data.password) == true) {
-      return res.status(400).send({
-        status: false,
-        msg: "password cannot be a empty"
-      });
+      return res
+        .status(400)
+        .send({ status: false, msg: " Please enter password(required field)" });
+    } 
+    else if (space(data.password) == true) {
+      return res
+        .status(400)
+        .send({ status: false, msg: "password cannot be a empty" });
     }
 
-    // end of edge cases
     // create author
     const savedData = await authorModel.create(data)
     return res.status(200).send({
@@ -115,23 +114,24 @@ const createAuthor = async function (req, res) {
 }
 
 // LOGIN AUTHOR ==========================
-// AUTHENTICATION PART ===========================  
-
 const loginAuthor = async function (req, res) {
   try {
+    // req.body.email is used in postman it can be change both sides
+    let username = req.body.email
+    let password = req.body.password
 
-    let username = req.body.email;
-    let password = req.body.password;
 
     let user = await authorModel.findOne({
       email: username,
       password: password
-    });
+    })
+   
 
     if (!user) return res.status(400).send({
       status: false,
       msg: " username or password is incorrect "
-    });
+    })
+
 
     // AUTHENTICATION BEGINS HERE===================
 
@@ -150,9 +150,9 @@ const loginAuthor = async function (req, res) {
     });
   }
   catch (err) {
-    return res.status(500).send({ status: false, data: err.message })
+    return res.status(500).send({ status: false, data0: err.name,data1: err.message })
   }
-};
+}
 
 module.exports.createAuthor = createAuthor
 module.exports.loginAuthor = loginAuthor

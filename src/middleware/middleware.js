@@ -49,7 +49,7 @@ const authorization = async function (req, res, next) {
         let authorlogging;
 
         if (req.body.hasOwnProperty("authorId")) {
-
+            // original code
             if (!isValidObjectId(req.body.authorId))
 
                 return res.status(400).send({
@@ -80,14 +80,12 @@ const authorization = async function (req, res, next) {
 
             authorlogging = blogData1.authorId.toString()
         }
-
         if (!authorlogging)
 
             return res.status(400).send({
                 status: false,
                 msg: "AuthorId is required"
             })
-
         // Authorisation: authorId in token is compared with authorId against blogId
 
         if (Inuser !== authorlogging) {
@@ -97,7 +95,6 @@ const authorization = async function (req, res, next) {
                 msg: "Authorisation Failed!"
             });
         }
-
         next()
     }
     catch (err) {
@@ -107,6 +104,11 @@ const authorization = async function (req, res, next) {
         })
     }
 };
+
+
+
+
+
 
 module.exports.authentication = authentication
 module.exports.authorization = authorization
