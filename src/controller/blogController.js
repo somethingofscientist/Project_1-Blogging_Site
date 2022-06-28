@@ -51,7 +51,6 @@ const createBlog = async function (req, res) {
     if (!author) {
       return res.status(400).send({ status: false, msg: "author does not exist" })
     }
-
     // validation end
 
     const blogData = {
@@ -83,6 +82,7 @@ const createBlog = async function (req, res) {
     res.status(201).send({ status: true, msg: "New blog create successfully", data: savedData })
 
 
+
   }
   catch (err) {
     return res.status(500).send({
@@ -96,60 +96,44 @@ const createBlog = async function (req, res) {
 
 const getBlog = async function (req, res) {
   try {
+    const filterQuery = { isDeleted: false, deletedAt: null, isPublished: true }
+    const queryParams = req.query
 
-    const filterquery = { isDeleted: false, deletedAt: null, publishedAt: true }
-    const queryparms = req.query
+    if (isValidRequestBody(queryParams)) {
+      const { authorId, category, tags, subcategory } = queryParams
 
-    if (isValidRequestBody(queryparms)) {
-
-      const { authorid, tags, category, subcategory } = queryparms
-    }
-
-
-    if (category) {
-      let verifyCategory = await blogModel.findOne({ category: category })
-      if (!verifyCategory) {
-        return res.status(400).send({ status: false, msg: "No Blogs In This Category Exist" })
+      if (isValid(authorId) && isValidObjectId(authorId)) {
+        filterQuery['authorId'] = authorId
       }
-    }
-    if (tags) {
-      let verifyTag = await blogModel.findOne({ tags: tags })
-      if (!verifyTag) {
-        return res.status(400).send({ status: false, msg: "No Blogs In This Tags Exist" })
+
+      if (isValid(category)) {
+        filterQuery['category'] = category.trim()
       }
-    }
-    if (subcategory) {
-      let verifySubcategory = await blogModel.findOne({ subcategory: subcategory })
-      if (!verifySubcategory) {
-        return res.status(400).send({ status: false, msg: "No Blogs In This SubCategory Exist" })
+
+      if (isValid(tags)) {
+        const tagsArr = tags.trim().split(',').map(tag => tag.trim())
+        filterQuery['tags'] = { $all: tagsArr }
+      }
+
+      if (isValid(subcategory)) {
+        const subcatArr = subcategory.trim().split(',').map(subcat => subcat.trim())
+        filterQuery['subcategory'] = { $all: subcatArr }
       }
     }
 
-    if (authorId) {
-      if (!mongoose.isValidObjectId(authorId))
-        return res.status(400).send({ status: false, msg: "Invalid AuthorId" })
+    const blogs = await blogModel.find(filterQuery)
+
+    if (Array.isArray(blogs) && blogs.length === 0) {
+      return res.status(404).send({ status: true, msg: "no blogs found" })
     }
 
-
-
-    let getRecord = await blogModel.find(filter).populate("authorId")
-    console.log(getRecord)
-
-
-    if (getRecord.length == 0) {
-      return res.status(404).send({
-        "msg": "Data Not Found"
-      })
-    }
-
-    return res.status(200).send({ status: true, msg: "get", data: getRecord })
+    return res.status(200).send({ status: true, msg: "Blogs List", data: blogs })
   }
   catch (err) {
     res.status(500).send({ msg: err.name })
   }
 
 }
-
 
 
 
@@ -274,74 +258,96 @@ const updateBlog = async function (req, res) {
 
 const deleteBlog = async function (req, res) {
   try {
-    let BlogId = req.params.blogId
-    let date = new Date()
-    let Blog = await blogModel.findById(BlogId)
+      const params = req.params
+      const blogId = params.blogId
+      const authorIdFromToken = req.authorId
 
-    if (!Blog) {
-      return res.status(404).send({
-        status: false,
-        msg: "Blog Id does not exists"
-      })
-    }
-    let check = await blogModel.findOneAndUpdate(
-      { _id: BlogId },
-      { $set: { isDeleted: true, deletedAt: date } },
-      { new: true })
+      if(!isValidObjectId(blogId)){
+        return res.status(400).send({ status: false, msg: `${blogId} is not a valid blog Id` })
+      }
 
-    //IF THE BLOG IS ALREADY DELETED   ???? BY TA ????
+      if(!isValidObjectId(authorIdFromToken)){
+        return res.status(400).send({ status: false, msg: `${authorIdFromToken} is not a valid token Id` })
+      }   
 
-    if (check && check.isDeleted) {
-      return res.status(404).send({ status: false, msg: "ALREADY DELETED" })
-    }
+      const blog = await blogModel.findOne({_id: blogId, isDeleted: false, deletedAt: null})
 
+      if(!blog){
+        return res.status(404).send({ status: false, msg: " Blog Not Found " })
+      }
 
-    return res.status(200).send({ status: true, msg: " DATA IS DELETED ", data: check })
-
+      if(blog.authorId.toString() !== authorIdfromToken ){
+        return res.status(401).send({ status: false, msg: "You Are Unauthorized" })
+      }
+      // **==>
+      await blogModel.findOneAndUpdate({_id: blogId}, {$set: {isDeleted: true, deletedAt: new Date() }})
+      return res.status(200).send({ status: true, msg: " DATA IS DELETED " })
   }
+      catch (error) {
+      return res.status(500).send({ status: false, data: error.name })
+}
 
-  catch (error) {
-    return res.status(500).send({ status: false, data: error.name })
-  }
+  
 }
 
 
-//deleteby params are not get understand
-
 const deleteBlogsQueryParams = async function (req, res) {
   try {
+    const filterQuery = {isDeleted: false, deletedAt: null}
+    const queryParams = req.query
+    const authorIdFromToken = req.authorId
 
-    let Inuser = req.authorId
+    if(!isValidObjectId(authorIdFromToken)){
+      return res.status(400).send({ status: false, msg: `${authorIdFromToken} is not a valid token Id` })
+    }  
 
-    let queryparms = req.query;
+    if(!isValidRequestBody(queryParams)){
+      return res.status(400).send({ status: false, msg: `query params are empty` })
+    }  
 
-    let data2 = new Date()
-
-    if (Object.keys(queryparms).length == 0) {
-      return res.status(400).send({
-        status: false,
-        msg: "Please provide key value details"
-      })
+    const {authorId, category, tags, subcategory, isPublished} = queryParams
+      
+    if (isValid(authorId) && isValidObjectId(authorId)) {
+      filterQuery['authorId'] = authorId
     }
 
-    const blogs = await blogModel.find({ ...queryparms, isDeleted: false, authorId: Inuser })
-
-    if (blogs.length == 0) {
-      return res.status(404).send({
-        status: false,
-        msg: "blogs does not exists"
-      })
-
+    if (isValid(category)) {
+      filterQuery['category'] = category.trim()
     }
 
-    const deleteBlog = await blogModel.updateMany({ _id: { $in: blogs } },
-      { $set: { isDeleted: true, deletedAt: data2 } })
+    if (isValid(isPublished)) {
+      filterQuery['isPublished'] = isPublished.trim()
+    }
 
-    res.status(200).send({
-      status: true,
-      msg: "Data is Deleted By Query",
-      data: deleteBlog
+    if (isValid(tags)) {
+      const tagsArr = tags.trim().split(',').map(tag => tag.trim())
+      filterQuery['tags'] = { $all: tagsArr }
+    }
+
+    if (isValid(subcategory)) {
+      const subcatArr = subcategory.trim().split(',').map(subcat => subcat.trim())
+      filterQuery['subcategory'] = { $all: subcatArr }
+    }
+
+    const blogs = await blogModel.find(filterQuery)
+
+    if (Array.isArray(blogs) && blogs.length === 0) {
+      return res.status(404).send({ status: false, msg: "no blogs found" })
+    }
+
+    const idsOfBlogsToDelete = blogs.map(blog => {
+        if(blog.authorId.toString() === authorIdFromToken ) return blog._id
     })
+
+    if(idsOfBlogsToDelete.length === 0){
+      return res.status(404).send({ status: false, msg: "Blogs List" })
+    }
+
+    await blogModel.updateMany(
+      { _id: {$in: idsOfBlogsToDelete}},
+      {$set:{ isDeleted: true, deletedAt: new Date()} }   
+      )
+    return res.status(200).send({ status: true, msg: "Blog is Deleted"  })
   }
   catch (err) {
     return res.status(500).send({

@@ -48,16 +48,11 @@ const authorization = async function (req, res, next) {
 
         let authorlogging;
 
-<<<<<<< HEAD
-        if (req.body.hasOwnProperty("authorId")) {
-            // original code
-=======
         // original code
         // if (req.body.authorId) {
 
         if (req.body.hasOwnProperty("authorId")) {
-            
->>>>>>> 26b9b75f035893ebc1694413587c520cf6e8892b
+
             if (!isValidObjectId(req.body.authorId))
 
                 return res.status(400).send({
@@ -113,20 +108,5 @@ const authorization = async function (req, res, next) {
     }
 };
 
-<<<<<<< HEAD
-
-
-
-
-
 module.exports.authentication = authentication
 module.exports.authorization = authorization
-
-
-
-
-
-=======
-module.exports.authentication = authentication
-module.exports.authorization = authorization
->>>>>>> 26b9b75f035893ebc1694413587c520cf6e8892b
