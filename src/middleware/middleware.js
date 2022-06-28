@@ -40,10 +40,11 @@ const authorization = async function (req, res, next) {
 
         let authorlogging;
 
-        // if (req.body.hasOwnProperty("authorId")) {
-            // original code
-        if (req.body.authorId) {
+        // original code
+        // if (req.body.authorId) {
 
+        if (req.body.hasOwnProperty("authorId")) {
+            
             if (!isValidObjectId(req.body.authorId))
                 return res.status(400).send({ msg: "Enter valid authorId" })
 
