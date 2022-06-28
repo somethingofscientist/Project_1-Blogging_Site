@@ -22,7 +22,13 @@ const author = new mongoose.Schema({
         type: String,
         unique: true,
         required: true,
-        trim: true
+        trim: true,
+        lowercase:true,
+        validate:{
+            validator: function (email){
+                return (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) ))
+            },message: "Special Symbols Required", isAsync: false,
+        }
     },
     password:{
         type: String,

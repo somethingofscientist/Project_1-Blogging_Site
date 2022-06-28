@@ -15,6 +15,10 @@ router.post("/login", authors.loginAuthor) //no need to enter token
 // BLOG CONTROLLER
 router.post("/blogs", blogs.createBlog) //no need to enter token
 
+<<<<<<< HEAD
+=======
+// GET BLOG
+>>>>>>> 26b9b75f035893ebc1694413587c520cf6e8892b
 router.get("/blogs", middleware.authentication, blogs.getBlog)
 
 // UPDATE BLOG
@@ -25,9 +29,12 @@ router.delete("/deleteBlog/:blogId", middleware.authentication,middleware.author
 
 // DELETE BLOG BY PARAMS
 router.delete("/blogs", middleware.authentication, blogs.deleteBlogsQueryParams)
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 26b9b75f035893ebc1694413587c520cf6e8892b
 
 
 

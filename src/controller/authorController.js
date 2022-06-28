@@ -1,20 +1,39 @@
-const mongoose = require("mongoose")
 const authorModel = require("../model/authorModel")
 const jwt = require("jsonwebtoken");
 
 
+<<<<<<< HEAD
 // make a function for validation for the fname,lname,title in the author
 const isValid = function (value) {
   if (typeof value === "undefined" || value === Number || value === null) return false
   if (typeof value === "string" && value.trim().length === 0) return false
   return true
 }
+=======
+    // make a function for validation for the fname,lname,title in the author
+    // By TA
+    const isValid = function (value) {
+      if (typeof value === "undefined" || value === null) return false
+      if (typeof value === "string" && value.trim().length === 0) return false
+      return true
+    }
+>>>>>>> 26b9b75f035893ebc1694413587c520cf6e8892b
 
+    const isValidTitle = function (title) {
+      return ["Mr", "Mrs", "Miss"].indexOf(title) !== -1
+    }
+
+    const isValidRequestBody = function (data) {
+      return Object.keys(requestBody).length > 0
+    }
+    
 
 // CREATE AUTHOR
 const createAuthor = async function (req, res) {
   try {
+
     let data = req.body
+<<<<<<< HEAD
     if (Object.keys(data).length == 0) {
       return res.status(400).send({
         status: false,
@@ -61,19 +80,45 @@ const createAuthor = async function (req, res) {
         status: false,
         msg: "please Enter Valid Title"
       })
-    }
-    else if (space(data.title) == true) {
-      return res
-        .status(400)
-        .send({ status: false, msg: "Title cannot be a empty" });
+=======
+    if (!isValidRequestBody(data) ) {
+      return res.status(400).send({ msg: "Please provide blog details" })
     }
 
+    const {fname, lname, title, email, password} = data
+    // ALL THE EDGE CASES ARE HERE FOR THE CREATE AUTHOR
 
+    if (!isValid(fname)) {
+      return res.status(400).send({ status: false, msg: "please Enter Valid first name" })
+    }
+
+    if (!isValid(lname)) {
+      return res.status(400).send({ status: false, msg: "please Enter Valid last name" })
+    }
+
+    if (!isValid(title)) {
+      return res.status(400).send({ status: false, msg: "please Enter Valid Title" })
+>>>>>>> 26b9b75f035893ebc1694413587c520cf6e8892b
+    }
+    
+    if (!isValidTitle(title)) {
+      return res.status(400).send({ status: false, msg: "title should be Mr Mrs Miss" })
+    }
+
+    if (!isValid(email)) {
+      return res.status(400).send({ status: false, msg: "email is required" })
+    }
+
+<<<<<<< HEAD
     // EMAIL DUPLICAY AND SYNTAX OF IT BY TA
 
 
     if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))) {
       return res.status(400).send({ status: false, msg: "please Enter Valid Email" })
+=======
+    if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
+      return res.status(400).send({ status: false, msg: "email should be Valid Email" })
+>>>>>>> 26b9b75f035893ebc1694413587c520cf6e8892b
     }
 
     const isEmailPresent = await authorModel.findOne({ email: data.email })
@@ -85,24 +130,23 @@ const createAuthor = async function (req, res) {
       })
     }
 
-    // password validation
-    if (!data.password) {
-      return res
-        .status(400)
-        .send({ status: false, msg: " Please enter password(required field)" });
-    } 
-    else if (space(data.password) == true) {
-      return res
-        .status(400)
-        .send({ status: false, msg: "password cannot be a empty" });
+    if (!isValid(password)) {
+      return res.status(400).send({ status: false, msg: " Please enter password" });
     }
 
     // create author
+<<<<<<< HEAD
     const savedData = await authorModel.create(data)
     return res.status(200).send({
       status: true,
       data: savedData
     })
+=======
+    
+    const authorData = {fname, lname, title, email, password}
+    const savedData = await authorModel.create(authorData)
+    return res.status(200).send({ data: savedData })
+>>>>>>> 26b9b75f035893ebc1694413587c520cf6e8892b
   }
   catch (err) {
     return res.status(500).send({
@@ -115,17 +159,32 @@ const createAuthor = async function (req, res) {
 
 // LOGIN AUTHOR ==========================
 const loginAuthor = async function (req, res) {
+
   try {
-    // req.body.email is used in postman it can be change both sides
-    let username = req.body.email
+
+    let data = req.body
+    if (!isValidRequestBody(data) ) {
+      return res.status(400).send({ msg: "Please provide blog details" })
+    }
+
+    let email = req.body.email
     let password = req.body.password
 
 
+    if (!isValid(email)) {
+      return res.status(400).send({ status: false, msg: "email is required" })
+    }
+
+    if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
+      return res.status(400).send({ status: false, msg: "email should be Valid Email" })
+    }
+    // req.body.email is used in postman it can be change both sides
+
     let user = await authorModel.findOne({
-      email: username,
+      email: email,
       password: password
     })
-   
+
 
     if (!user) return res.status(400).send({
       status: false,
@@ -136,21 +195,32 @@ const loginAuthor = async function (req, res) {
     // AUTHENTICATION BEGINS HERE===================
 
     let token = jwt.sign({
+<<<<<<< HEAD
 
       authorId: user._id.toString(),   // provide the things which are unique like object id
       batch: "Radon",
     },
       "project_1"    // secret key
+=======
+      // provide the things which are unique like object id
+      authorId: user._id.toString(),
+      iat :Math.floor(Date.now() / 1000),
+      exp :Math.floor(Date.now() / 1000) + 10*60*60,
+      batch: "Radon",
+    },
+      "project_1"   // =============>   secret key 
+>>>>>>> 26b9b75f035893ebc1694413587c520cf6e8892b
     );
 
+    res.header('x-api-key' , token)
     res.status(200).send({
       status: true,
       token: "You Are Login In The App",
-      data: { token: token }
+      data: { token }
     });
   }
   catch (err) {
-    return res.status(500).send({ status: false, data0: err.name,data1: err.message })
+    return res.status(500).send({ status: false, data0: err.name, data1: err.message })
   }
 }
 
