@@ -19,13 +19,13 @@ router.post("/blogs", blogs.createBlog) //no need to enter token
 router.get("/blogs", middleware.authentication, blogs.getBlog)
 
 // UPDATE BLOG
-router.put("/blogs/:blogId", middleware.authentication, middleware.authorization,  blogs.updateBlog)
+router.put("/blogs/:blogId", middleware.authentication,middleware.authorization, blogs.updateBlog)
 
 // DELETE BLOG
 router.delete("/deleteBlog/:blogId", middleware.authentication,middleware.authorization, blogs.deleteBlog)
 
 // DELETE BLOG BY PARAMS
-router.delete("/blogs", middleware.authentication, blogs.deleteBlogsQueryParams)
+router.delete("/blogs",  middleware.authentication,blogs.deleteBlogsQueryParams)
 
 
 

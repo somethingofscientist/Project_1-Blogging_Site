@@ -16,12 +16,13 @@ const blog = new mongoose.Schema({
     authorId : {
         type: ObjectId,
         required: true,
-        ref : "Project 1 Author",
+        ref : "authorProject",
     },
     tags: {
         type: [String],
         trim: true
     },
+    
     category:{
         type: String,
         required: true,
@@ -29,25 +30,26 @@ const blog = new mongoose.Schema({
     },
     subcategory:{
         type: [String],
+        required: true,
         trim: true
     },
     isDeleted: {
         type: Boolean, 
         default: false,
+        trim: true
     },
     deletedAt: {
-        type: Date,
-        default: null
-    },
+        type: Date
+    },   
     isPublished: {
         type: Boolean ,
         default: false,
+        trim: true
     },
      publishedAt: {
-        type: Date,
-        default: null
+        type: Date
     }
     
 }, { timestamps: true } );
 
-module.exports = mongoose.model('Project 1 Blogging', blog) //BlogProjects
+module.exports = mongoose.model('blogProject', blog) //BlogProjects
