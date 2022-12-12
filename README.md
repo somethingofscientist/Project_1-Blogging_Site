@@ -32,6 +32,7 @@ Create atleast 5 blogs for each author
 Return HTTP status 400 for an invalid request with a response body like this
 
 **GET /blogs**
+
 Returns all blogs in the collection that aren't deleted and are published
 Return the HTTP status 200 if any documents are found. The response structure should be like this
 If no documents are found then return an HTTP status 404 with a response like this
@@ -48,10 +49,12 @@ Return an HTTP status 200 if updated successfully with a body like this
 Also make sure in the response you return the updated blog document.
 
 **DELETE /blogs/:blogId**
+
 Check if the blogId exists( and is not deleted). If it does, mark it deleted and return an HTTP status 200 without any response body.
 If the blog document doesn't exist then return an HTTP status of 404 with a body like this
 
 **DELETE /blogs?queryParams**
+
 Delete blog documents by category, authorid, tag name, subcategory name, unpublished
 If the blog document doesn't exist then return an HTTP status of 404 with a body like this
 
@@ -61,6 +64,7 @@ If the blog document doesn't exist then return an HTTP status of 404 with a body
 Add authentication and authroisation feature
 
 **POST /login**
+
 Allow an author to login with their email and password. On a successful login attempt return a JWT token contatining the authorId
 If the credentials are incorrect return a suitable error message with a valid HTTP status code
 
